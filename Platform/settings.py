@@ -36,8 +36,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
 
 CORS_ALLOWED_ORIGINS = [
-    "https://your-firebase-app.web.app",
-    "https://your-firebase-app.firebaseapp.com",
+    'http://localhost:5173',
 ]
 
 

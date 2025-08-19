@@ -24,22 +24,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-r3(-=a@w#^*#9a03vy^+jjpy@f0$tz5kufc4hz-)baydq(^+^@'
+SECRET_KEY = 'django-insecure-r3(-=a@w#^*#9a03vy^+jjpy@f0$tz5kufc4hz-)baydq(^+^@'
 
 
-SECRET_KEY = config('SECRET_KEY', default='4jcage4u)l3y12(v3^awu398mh*7%uw7y(l%3$j))y5ssiq+8!')
+# SECRET_KEY = config('SECRET_KEY', default='4jcage4u)l3y12(v3^awu398mh*7%uw7y(l%3$j))y5ssiq+8!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS = ['*']
 
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:8000',
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:5173',
+#     'http://localhost:8000',
 
-]
+# ]
 
 
 # Application definition
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'drf_spectacular',
+    'storages',
 ]
 
 REST_FRAMEWORK = {
@@ -108,7 +109,7 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'HOST': 'database-1.cvmwuyecgjhs.eu-north-1.rds.amazonaws.com',
         'PORT': config('DB_PORT', default='5432'),
     }
 }
@@ -173,5 +174,20 @@ DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL')  # Add this line
 
 # FRONTEND_URL=
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home/ubuntu/Platform/staticfiles'
+# STATIC_URL = '/static/'
+# STATIC_ROOT = '/home/ubuntu/Platform/staticfiles'
+
+
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+# 
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERIFY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+

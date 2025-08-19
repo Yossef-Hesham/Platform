@@ -225,6 +225,10 @@ class EmailVerification(models.Model):
         return timezone.now() > self.expires_at
 
 
+class TEST(models.Model):
+    txt = models.CharField(max_length=100)
+    image = models.FileField(upload_to='test_photos/', null=True, blank=True)
+
 class PasswordResetToken(models.Model):
     """
     Password reset tokens

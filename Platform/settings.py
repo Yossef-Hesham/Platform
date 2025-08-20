@@ -175,4 +175,4 @@ DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL')  # Add this line
 # FRONTEND_URL=
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/ubuntu/Platform/staticfiles'
+STATIC_ROOT = '/home/youssef-hesham/deploy_AWS/Platform/staticfiles'

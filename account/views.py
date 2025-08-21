@@ -58,22 +58,31 @@ class RegisterView(APIView):
         """Send email verification"""
         token = str(uuid.uuid4())
         expires_at = timezone.now() + timedelta(hours=24)
-        
+
+        # Save token to DB
         EmailVerification.objects.create(
             user=user,
             token=token,
             expires_at=expires_at
         )
-        
+
+        # Build verification link
         # verification_url = f"{settings.FRONTEND_URL}/verify-email/{token}"
-        
-        send_mail(
-            subject='Verify Your Email - Courses Platform',
-            message=f'Please click the following link to verify your email: ',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
+
+        try:
+            send_mail(
+                subject='Verify Your Email - Courses Platform',
+                message=f'Please click the following link to verify your email:\n\n{token}',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+            return True  # success
+        except Exception as e:
+            # Log the error (so you see it in server logs)
+            print(f"[ERROR] Failed to send verification email: {e}")
+            return False  # failure
+
 
 
 class LoginView(APIView):

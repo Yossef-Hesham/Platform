@@ -35,6 +35,7 @@ class RegisterView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         
         if serializer.is_valid():
+            print('User registration successful')
             user = serializer.save()
             
             # Generate email verification token

@@ -24,8 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r3(-=a@w#^*#9a03vy^+jjpy@f0$tz5kufc4hz-)baydq(^+^@'
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECRET_KEY = config('SECRET_KEY', default='4jcage4u)l3y12(v3^awu398mh*7%uw7y(l%3$j))y5ssiq+8!')
 
@@ -40,7 +39,10 @@ ALLOWED_HOSTS = ['*']
 DEBUG = False
 
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:8000',
+]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
@@ -82,8 +84,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -116,13 +118,13 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'postgres'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Youssef_hesham49'),
-        'HOST': os.getenv('DB_HOST', 'database-1.cvmwuyecgjhs.eu-north-1.rds.amazonaws.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
-}
+} 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -165,6 +167,19 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# STATIC_ROOT = '/home/youssef-hesham/deploy_AWS/Platform/staticfiles'
+
+STATICFILES_DIRS = [BASE_DIR / "static"] 
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+storages = {
+    
+       "staticfiles": { 
+           "whitenoise.storage.CompressedManifestStaticFilesStorage",
+       },
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -181,8 +196,3 @@ EMAIL_HOST_PASSWORD = 'wqwkpjrimesajdfz'
 DEFAULT_FROM_EMAIL = 'elhhamzy4923@gmail.com'  # Add this line
 
 # FRONTEND_URL=
-
-STATIC_URL = '/static/'
-# STATIC_ROOT = '/home/youssef-hesham/deploy_AWS/Platform/staticfiles'
-
-STATICFILES_DIRS = [BASE_DIR / "static"] 

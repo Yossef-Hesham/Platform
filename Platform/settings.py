@@ -30,14 +30,14 @@ SECRET_KEY = 'django-insecure-r3(-=a@w#^*#9a03vy^+jjpy@f0$tz5kufc4hz-)baydq(^+^@
 # SECRET_KEY = config('SECRET_KEY', default='4jcage4u)l3y12(v3^awu398mh*7%uw7y(l%3$j))y5ssiq+8!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True") == "True"
+# DEBUG = os.getenv("DEBUG", "True") == "True"
 
 # Allowed hosts
-if DEBUG:
-    ALLOWED_HOSTS = []
-else:
-    ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/']
-
+# if DEBUG:
+#     ALLOWED_HOSTS = []
+# else:
+ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/']
+DEBUG = False
 
 
 

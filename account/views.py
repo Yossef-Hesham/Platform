@@ -25,6 +25,7 @@ from .serializers import (
 )
 
 
+
 class RegisterView(APIView):
     """
     User registration endpoint
@@ -32,6 +33,7 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
+        print("POST /register called with data:", request.data)
         serializer = UserRegistrationSerializer(data=request.data)
         
         if serializer.is_valid():
@@ -53,10 +55,14 @@ class RegisterView(APIView):
                 }
             }, status=status.HTTP_201_CREATED)
         
+        else:
+            print(serializer.errors) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def _send_verification_email(self, user):
         """Send email verification"""
+        print("isssss seeeeeenntnnnnnnt")
+        
         token = str(uuid.uuid4())
         expires_at = timezone.now() + timedelta(hours=24)
 

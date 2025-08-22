@@ -34,9 +34,9 @@ SECRET_KEY = 'django-insecure-r3(-=a@w#^*#9a03vy^+jjpy@f0$tz5kufc4hz-)baydq(^+^@
 
 # Allowed hosts
 # if DEBUG:
-#     ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # else:
-ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/']
+# ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/', '127.0.0.1']
 DEBUG = False
 
 
@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'storages',
+    'django_extensions',
 ]
 
 REST_FRAMEWORK = {

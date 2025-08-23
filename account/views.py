@@ -45,13 +45,16 @@ class RegisterView(APIView):
             
             # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
-            
+
+            token_to_verify = EmailVerification.objects.get(user=user).token
+
             return Response({
                 'message': 'Registration successful. Please check your email to verify your account.',
                 'user': UserProfileSerializer(user).data,
                 'tokens': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
+                    'token_to_verify': token_to_verify
                 }
             }, status=status.HTTP_201_CREATED)
         

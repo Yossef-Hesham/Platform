@@ -1,0 +1,56 @@
+
+
+
+POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/register/
+Content-Type: application/json
+
+{
+    "username":"jo",
+    "email":" youssefabdelallem23@gmail.com",
+    "password":"12345678y",
+    "password_confirm":"12345678y",
+    "first_name":"joo",
+    "last_name":"elh"
+}
+
+
+###
+
+
+POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/verify-email//
+Content-Type: application/json
+
+{
+    "username":"joo_elh",
+    "email":" youss4923@gmail.com",
+    "password":"12345678y",
+    "password_confirm":"12345678y",
+    "first_name":"joo",
+    "last_name":"elh"
+}
+
+
+
+###
+
+POST http://127.0.0.1:8000/api/verify-email/0432d3f0-f7ca-41d6-82c0-ca2499dca0f7/
+Content-Type: application/json
+# Authorization: 
+
+{
+    
+}
+###
+
+POST http://127.0.0.1:8000/api/register/
+Content-Type: application/json
+# Authorization: 
+
+{
+    "username":"jii",
+    "email": "youss49233@gmail.com",
+    "password":"12345678y",
+    "password_confirm":"12345678y",
+    "first_name":"omar",
+    "last_name":"sanad"
+}

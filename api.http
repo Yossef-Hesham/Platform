@@ -5,8 +5,8 @@ POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/regis
 Content-Type: application/json
 
 {
-    "username":"jo",
-    "email":" youssefabdelallem23@gmail.com",
+    "username":"joo_hamzy",
+    "email":" youssifhamdy3@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
@@ -17,29 +17,36 @@ Content-Type: application/json
 ###
 
 
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/verify-email//
+POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/verify-email/0c4f53d1-6a9a-4a4a-9f1d-62a4e87b0047/
+
 Content-Type: application/json
-
-{
-    "username":"joo_elh",
-    "email":" youss4923@gmail.com",
-    "password":"12345678y",
-    "password_confirm":"12345678y",
-    "first_name":"joo",
-    "last_name":"elh"
-}
-
-
-
-###
-
-POST http://127.0.0.1:8000/api/verify-email/0432d3f0-f7ca-41d6-82c0-ca2499dca0f7/
-Content-Type: application/json
-# Authorization: 
 
 {
     
 }
+
+###
+
+POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/login/
+
+{
+    "username_or_email":"joo_hamzy",
+    "password":"12345678y"
+}
+
+
+###
+
+POST http://127.0.0.1:8000/api/login/
+Content-Type: application/json
+# Authorization: 
+
+{
+    "username_or_email":"joo_hamzy",
+    "password":"12345678y"
+}
+
+
 ###
 
 POST http://127.0.0.1:8000/api/register/

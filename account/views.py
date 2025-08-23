@@ -100,7 +100,9 @@ class LoginView(APIView):
     User login endpoint
     """
     permission_classes = [permissions.AllowAny]
+    media_type = 'application/json'
     
+
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         

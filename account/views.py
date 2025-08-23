@@ -95,12 +95,14 @@ class RegisterView(APIView):
 
 
 
+from rest_framework.parsers import JSONParser
+
 class LoginView(APIView):
     """
     User login endpoint
     """
     permission_classes = [permissions.AllowAny]
-    media_type = 'application/json'
+    parser_classes = [JSONParser]
     
 
     def post(self, request):

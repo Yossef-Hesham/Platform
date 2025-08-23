@@ -12,6 +12,8 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 import uuid
+import random
+
 
 from .models import (
     User, TeacherProfile, StudentProfile, ParentProfile,
@@ -62,11 +64,12 @@ class RegisterView(APIView):
             print(serializer.errors) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
     def _send_verification_email(self, user):
         """Send email verification"""
         print("isssss seeeeeenntnnnnnnt")
         
-        token = str(uuid.uuid4())
+        token = str(random.randint(1000, 9999))
         expires_at = timezone.now() + timedelta(hours=24)
 
         # Save token to DB

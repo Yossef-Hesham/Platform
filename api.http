@@ -28,6 +28,7 @@ Content-Type: application/json
 ###
 
 POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/login/
+Content-Type: application/json
 
 {
     "username_or_email":"joo_hamzy",

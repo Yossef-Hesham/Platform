@@ -18,12 +18,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = (
             'username', 'email', 'password', 'password_confirm',
             'first_name', 'last_name', 'user_type', 'phone_number',
-            'date_of_birth', 'bio', 'address', 'city', 'country'
+            'date_of_birth', 'bio', 'address', 'city', 'country', 'profile_picture',
+            # 'parent'
         )
         extra_kwargs = {
             'email': {'required': True},
             'first_name': {'required': True},
             'last_name': {'required': True},
+            # 'phone_number': {'required': True},
+            # 'user_type': {'required': True},
         }
     
     def validate(self, attrs):

@@ -29,7 +29,7 @@ class User(AbstractUser):
             regex=r'^\+?1?\d{9,15}$',
             message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
         )],
-        blank=True,
+        blank=False,
         null=True
     )
     
@@ -39,7 +39,7 @@ class User(AbstractUser):
         null=True
     )
     
-    date_of_birth = models.DateField(blank=True, null=True)
+    date_of_birth = models.DateField(blank=False, null=True)
     bio = models.TextField(max_length=500, blank=True)
     
     # Address fields
@@ -56,7 +56,7 @@ class User(AbstractUser):
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
-        blank=True,
+        blank=False,
         null=True,
         limit_choices_to={'user_type': 'parent'},
         related_name='children'

@@ -7,8 +7,7 @@
             "use": "@vercel/python",
             "config": {
                 "maxLambdaSize": "15mb",
-                "runtime": "python3.12",
-                "buildCommand":"bash setup.sh"
+                "runtime": "python3.12"
             }
         }
     ],
@@ -16,10 +15,6 @@
         { 
             "src": "/(.*)",
             "dest": "Platform/Wsgi.py" 
-        }, 
-        {
-            "src": "/static/(.*)", 
-            "dest": "/static/$1"
         }
     ]
 

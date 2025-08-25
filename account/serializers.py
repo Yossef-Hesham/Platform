@@ -12,21 +12,27 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True)
-    
+
+    parent = serializers.SlugRelatedField(
+        queryset=User.objects.filter(user_type='parent'),
+        slug_field='username', allow_null=True, required=False
+    )
+
     class Meta:
         model = User
         fields = (
             'username', 'email', 'password', 'password_confirm',
             'first_name', 'last_name', 'user_type', 'phone_number',
             'date_of_birth', 'bio', 'address', 'city', 'country', 'profile_picture',
-            # 'parent'
+            'parent',
         )
         extra_kwargs = {
             'email': {'required': True},
             'first_name': {'required': True},
             'last_name': {'required': True},
-            # 'phone_number': {'required': True},
-            # 'user_type': {'required': True},
+            'phone_number': {'required': True},
+            'user_type': {'required': True},
+            'date_of_birth': {'required': True},
         }
     
     def validate(self, attrs):

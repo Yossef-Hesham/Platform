@@ -65,6 +65,48 @@ Content-Type: application/json
 # Authorization: 
 
 
+{   
+    "username":"hamzzyy",
+    "email":" youssifhamdy333@gmail.com",
+    "password":"12345678y",
+    "password_confirm":"12345678y",
+    "first_name":"joo",
+    "last_name":"elfess",
+    "user_type":"student",
+    "phone_number":"0123456789",
+    "parent": "joo_hamzy"
+
+}
+
+
+###
+
+POST http://127.0.0.1:8000/api/verify-email/3556/
+Content-Type: application/json
+# Authorization: 
+
+
+###
+
+GET  http://127.0.0.1:8000/api/profile/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MDY1NzI4LCJpYXQiOjE3NTYwNjU0MjgsImp0aSI6IjBkMjE2ZTM5M2EwZjRjZGQ5M2IwZTI0ZTVmNzBlN2I3IiwidXNlcl9pZCI6IjIyIn0.HTmwSGc8fquv23nY3CyABSg2Ug7x2DmNc4P-ZZaYves
+
+
+
+
+###
+
+POST http://127.0.0.1:8000/api/login/
+Content-Type: application/json
+# Authorization: 
+
+{
+    "username_or_email": "",
+    "password": "12345678y"
+}
+
+
 ###
 
 POST http://127.0.0.1:8000/api/change-password/

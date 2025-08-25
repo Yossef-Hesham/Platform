@@ -56,7 +56,7 @@ class User(AbstractUser):
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
-        blank=False,
+        blank=True,
         null=True,
         limit_choices_to={'user_type': 'parent'},
         related_name='children'

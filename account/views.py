@@ -207,7 +207,7 @@ class StudentProfileView(RetrieveUpdateAPIView):
 
 
 class ParentProfileView(RetrieveUpdateAPIView):
-    """
+    """""
     Get and update parent profile
     """
     serializer_class = ParentProfileSerializer

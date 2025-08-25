@@ -13,18 +13,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True)
 
-    parent = serializers.SlugRelatedField(
-        queryset=User.objects.filter(user_type='parent'),
-        slug_field='username', allow_null=True, required=False
-    )
-
+    
     class Meta:
         model = User
         fields = (
             'username', 'email', 'password', 'password_confirm',
             'first_name', 'last_name', 'user_type', 'phone_number',
             'date_of_birth', 'bio', 'address', 'city', 'country', 'profile_picture',
-            'parent',
+            
         )
         extra_kwargs = {
             'email': {'required': True},
@@ -101,6 +97,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     Serializer for user profile information
     """
     full_name = serializers.ReadOnlyField()
+    parent_name = serializers.ReadOnlyField(source='parent.full_name', default=None)
     
     class Meta:
         model = User
@@ -108,9 +105,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'first_name', 'last_name',
             'full_name', 'user_type', 'phone_number', 'profile_picture',
             'date_of_birth', 'bio', 'address', 'city', 'country',
-            'email_verified', 'date_joined', 'last_login'
+            'email_verified', 'date_joined', 'last_login','parent_name'
         )
-        read_only_fields = ('id', 'username', 'user_type', 'email_verified', 'date_joined', 'last_login')
+        read_only_fields = ('id', 'username', 'user_type', 'email_verified', 'date_joined', 'last_login','parent_name')
 
 
 class TeacherProfileSerializer(serializers.ModelSerializer):

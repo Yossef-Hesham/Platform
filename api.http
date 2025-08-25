@@ -5,12 +5,16 @@ POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/regis
 Content-Type: application/json
 
 {
-    "username":"joo_hamzy",
-    "email":" youssifhamdy3@gmail.com",
+    "username":"elh",
+    "email":" youss4923@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
-    "last_name":"elh"
+    "last_name":"elh",
+    "user_type":"student",
+    "phone_number":"0123456789",
+    "date_of_birth":"2000-01-01",
+    "parent":"joo_hamzy"
 }
 
 
@@ -65,18 +69,18 @@ Content-Type: application/json
 # Authorization: 
 
 
-{   
-    "username":"hamzzyy",
-    "email":" youssifhamdy333@gmail.com",
-    "password":"12345678y",
-    "password_confirm":"12345678y",
-    "first_name":"joo",
-    "last_name":"elfess",
-    "user_type":"student",
-    "phone_number":"0123456789",
-    "parent": "joo_hamzy"
+# {   
+#     "username":"hamzzyy",
+#     "email":" youssifhamdy333@gmail.com",
+#     "password":"12345678y",
+#     "password_confirm":"12345678y",
+#     "first_name":"joo",
+#     "last_name":"elfess",
+#     "user_type":"student",
+#     "phone_number":"0123456789",
+#     "parent": "joo_hamzy"
 
-}
+# }
 
 
 ###
@@ -88,9 +92,9 @@ Content-Type: application/json
 
 ###
 
-GET  http://127.0.0.1:8000/api/profile/
+GET  http://127.0.0.1:8000/api/profile/parent/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MDY1NzI4LCJpYXQiOjE3NTYwNjU0MjgsImp0aSI6IjBkMjE2ZTM5M2EwZjRjZGQ5M2IwZTI0ZTVmNzBlN2I3IiwidXNlcl9pZCI6IjIyIn0.HTmwSGc8fquv23nY3CyABSg2Ug7x2DmNc4P-ZZaYves
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MTI3NjE3LCJpYXQiOjE3NTYxMjczMTcsImp0aSI6IjEyNjZjNGQ5ODkyYzQ1ZjNhZWViZjc5NzY5NzA2YTU4IiwidXNlcl9pZCI6IjIyIn0.JGQ6rX1GY1gg1D2p-Obd0_nVI3IpJLzd9i_7UqXdwM4
 
 
 
@@ -102,7 +106,7 @@ Content-Type: application/json
 # Authorization: 
 
 {
-    "username_or_email": "",
+    "username_or_email": "joo_hamzy",
     "password": "12345678y"
 }
 
@@ -126,6 +130,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 POST http://127.0.0.1:8000/api/logout/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNzUzLCJpYXQiOjE3NTU5NjM0NTQsImp0aSI6ImI1YjBjZjZmNWU5OTQ2ZDBiMmFiYThkOTI4NDY2Y2UzIiwidXNlcl9pZCI6IjcifQ.WtfSA_6GG3yMP3VpO11cTuUaNfk1pPjvHgVoL4WHnMw
+
+
+
+###
+
+POST http://127.0.0.1:8000/api/link-child/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MTI3NjE3LCJpYXQiOjE3NTYxMjczMTcsImp0aSI6IjEyNjZjNGQ5ODkyYzQ1ZjNhZWViZjc5NzY5NzA2YTU4IiwidXNlcl9pZCI6IjIyIn0.JGQ6rX1GY1gg1D2p-Obd0_nVI3IpJLzd9i_7UqXdwM4
+
+
+{
+
+    "child_username": "hamzzyy"
+}
 
 
 

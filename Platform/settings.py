@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Allowed hosts
 # if DEBUG:
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app']
 # else:
 # ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/', '127.0.0.1']
 DEBUG = False

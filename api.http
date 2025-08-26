@@ -1,21 +1,21 @@
 
 
 
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/register/
+POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/register/
 Content-Type: application/json
 
-{
-    "username":"elh",
-    "email":" youss4923@gmail.com",
-    "password":"12345678y",
-    "password_confirm":"12345678y",
-    "first_name":"joo",
-    "last_name":"elh",
-    "user_type":"student",
-    "phone_number":"0123456789",
-    "date_of_birth":"2000-01-01",
-    "parent":"joo_hamzy"
-}
+# {
+#     "username":"elh",
+#     "email":" youss4923@gmail.com",
+#     "password":"12345678y",
+#     "password_confirm":"12345678y",
+#     "first_name":"joo",
+#     "last_name":"elh",
+#     "user_type":"student",
+#     "phone_number":"0123456789",
+#     "date_of_birth":"2000-01-01",
+#     "parent":"joo_hamzy"
+# }
 
 
 ###

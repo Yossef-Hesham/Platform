@@ -389,7 +389,7 @@ def password_reset_request(request):
         
         send_mail(
             subject='Password Reset - Courses Platform',
-            message=f'Click the following link to reset your password: {token}',
+            message=f'Click the following link ----(test)---- to reset your password: {token}',
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
             fail_silently=False,

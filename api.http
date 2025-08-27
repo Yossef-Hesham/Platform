@@ -1,25 +1,30 @@
 
 
 
-POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/register/
+POST  http://127.0.0.1:8000/user/register/
 Content-Type: application/json
 
-# {
-#     "username":"elh",
-#     "email":" youss4923@gmail.com",
-#     "password":"12345678y",
-#     "password_confirm":"12345678y",
-#     "first_name":"joo",
-#     "last_name":"elh",
-#     "user_type":"student",
-#     "phone_number":"0123456789",
-#     "date_of_birth":"2000-01-01",
-#     "parent":"joo_hamzy"
-# }
+{
+    "username":"joooooo",
+    "email":" youss4923@gmail.com",
+    "password":"12345678y",
+    "password_confirm":"12345678y",
+    "first_name":"joo",
+    "last_name":"elh",
+    "user_type":"student",
+    "phone_number":"0123456789",
+    "date_of_birth":"2000-01-01"
+}
 
 
 ###
 
+POST  http://127.0.0.1:8000/user/resend_verification_email/youss4923@gmail.com/
+Content-Type: application/json
+
+
+
+###
 
 POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/verify-email/0c4f53d1-6a9a-4a4a-9f1d-62a4e87b0047/
 
@@ -64,9 +69,40 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST http://127.0.0.1:8000/api/register/
+GET https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/profile/parent/
 Content-Type: application/json
-# Authorization: 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjI0MDQwLCJpYXQiOjE3NTYyMjM3NDAsImp0aSI6ImVhZDdlMmYzNDc5NzQ3ZjY5MDExY2YyYjQxNjQxMDhmIiwidXNlcl9pZCI6IjIyIn0.8Kq5vcFAUCxdmSMYn8-7f1D6OJ2qMCUVdOSZKldlTFI
+
+
+###
+
+POST http://127.0.0.1:8000/user/login/
+Content-Type: application/json
+
+{
+    "username_or_email": "youss4923@gmail.com",
+    "password": "youss4923"
+}
+
+###
+
+POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/link-child/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjI0MDQwLCJpYXQiOjE3NTYyMjM3NDAsImp0aSI6ImVhZDdlMmYzNDc5NzQ3ZjY5MDExY2YyYjQxNjQxMDhmIiwidXNlcl9pZCI6IjIyIn0.8Kq5vcFAUCxdmSMYn8-7f1D6OJ2qMCUVdOSZKldlTFI
+
+
+{
+    "child_username": "test_link"
+}
+
+
+
+###
+
+POST http://127.0.0.1:8000/user/delete-account/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjE2MDc0LCJpYXQiOjE3NTYyMTU3NzUsImp0aSI6ImVjYmFmNWM2OGEwMTQ0NmFhY2U0NDk3ZmEwYWQxN2JmIiwidXNlcl9pZCI6IjI1In0.JWWZWt6wuwoZb05YILcOo0oDWdWSmLiDwchu7tZqvTQ
+
 
 
 # {   
@@ -85,7 +121,7 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:8000/api/verify-email/3556/
+POST http://127.0.0.1:8000/user/verify-email/8621/
 Content-Type: application/json
 # Authorization: 
 
@@ -101,14 +137,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST http://127.0.0.1:8000/api/login/
+POST http://127.0.0.1:8000/user/password-reset/request/
+Content-Type: application/json
+# Authorization: 
+
+
+{
+    "email": "youss4923@gmail.com"
+}
+
+###
+POST http://127.0.0.1:8000/user/password-reset/confirm/5951/
 Content-Type: application/json
 # Authorization: 
 
 {
-    "username_or_email": "joo_hamzy",
-    "password": "12345678y"
+    "token": "5951",
+    "new_password": "youss4923",
+    "new_password_confirm": "youss4923"
 }
+
 
 
 ###

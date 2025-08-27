@@ -97,6 +97,87 @@ class RegisterView(APIView):
             return False  # failure
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import permissions
+from datetime import timedelta
+import random
+import logging
+
+# Add these imports - adjust based on your project structure
+from django.contrib.auth.models import User  # or your custom user model
+from .models import EmailVerification  # adjust the import path as needed
+
+logger = logging.getLogger(__name__)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def resend_verification_email(request, email):
+    """
+    Send email verification token to user
+    
+    Args:
+        request: HTTP request object
+        email: User email address from URL parameter
+        
+    Returns:
+        JsonResponse: Success/failure status with appropriate message
+    """
+    try:
+        # Get user or return 404 if not found
+        user = get_object_or_404(User, email=email)
+        
+        # Delete any existing verification tokens for this user
+        EmailVerification.objects.filter(user=user).delete()
+        
+        # Generate new verification token
+        token = str(random.randint(1000, 9999))
+        expires_at = timezone.now() + timedelta(hours=24)
+        
+        # Create new verification token
+        EmailVerification.objects.create(
+            user=user,
+            token=token,
+            expires_at=expires_at
+        )
+        
+        # Send verification email
+        send_mail(
+            subject='Verify Your Email - Courses Platform',
+            message=f'Your verification code is: {token}\n\n'
+                   f'This code will expire in 24 hours.\n\n'
+                   f'If you did not request this verification, please ignore this email.',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+        
+        logger.info(f"Verification email sent successfully to {email}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Verification email sent successfully',
+            'token': token  # You can remove this in production for security
+        })
+        
+    except User.DoesNotExist:
+        logger.warning(f"Attempt to send verification email to non-existent user: {email}")
+        return JsonResponse({
+            'success': False,
+            'error': 'User not found'
+        }, status=404)
+        
+    except Exception as e:
+        logger.error(f"Failed to send verification email to {email}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Failed to send verification email'
+        }, status=500)
+
 
 from rest_framework.parsers import JSONParser
 
@@ -138,6 +219,8 @@ class LoginView(APIView):
         
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class LogoutView(APIView):
@@ -258,6 +341,7 @@ def verify_email(request, token):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def change_password(request):
@@ -291,7 +375,7 @@ def password_reset_request(request):
         user = User.objects.get(email=email)
         
         # Generate reset token
-        token = str(uuid.uuid4())
+        token = str(random.randint(1000, 9999))
         expires_at = timezone.now() + timedelta(hours=1)
         
         PasswordResetToken.objects.create(
@@ -305,7 +389,7 @@ def password_reset_request(request):
         
         send_mail(
             subject='Password Reset - Courses Platform',
-            message=f'Click the following link to reset your password:',
+            message=f'Click the following link to reset your password: {token}',
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
             fail_silently=False,
@@ -416,3 +500,20 @@ def approve_teacher(request, teacher_id):
         return Response({
             'error': 'Teacher not found'
         }, status=status.HTTP_404_NOT_FOUND)
+
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        return Response({
+            'message': 'Account deleted successfully'
+        }, status=status.HTTP_204_NO_CONTENT)
+
+    return Response({
+        'error': 'Invalid request method'
+    }, status=status.HTTP_405_METHOD_NOT_ALLOWED)

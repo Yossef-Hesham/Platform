@@ -526,17 +526,24 @@ def approve_teacher(request, teacher_id):
 
 
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
-@login_required
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def delete_account(request):
+    
     if request.method == 'POST':
         user = request.user
-        logout(request)
+        
         user.delete()
+        
+        logout(request)
+        
         return Response({
             'message': 'Account deleted successfully'
-        }, status=status.HTTP_204_NO_CONTENT)
-
+        }, status=status.HTTP_200_OK)
+    
     return Response({
         'error': 'Invalid request method'
     }, status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -24,7 +24,7 @@ Content-Type: application/json
 
 {
     "username_or_email": "youss4923@gmail.com",
-    "password": "youss4923"
+    "password": "new_password123"
 }
 
 ###
@@ -104,9 +104,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 POST http://127.0.0.1:8000/user/delete-account/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjE2MDc0LCJpYXQiOjE3NTYyMTU3NzUsImp0aSI6ImVjYmFmNWM2OGEwMTQ0NmFhY2U0NDk3ZmEwYWQxN2JmIiwidXNlcl9pZCI6IjI1In0.JWWZWt6wuwoZb05YILcOo0oDWdWSmLiDwchu7tZqvTQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzI5NDUzLCJpYXQiOjE3NTYzMjkxNTMsImp0aSI6Ijg4MGY2YjdmMWVhNjQyYTQ4ODUzMGZhMmQ3MWZhNTU2IiwidXNlcl9pZCI6IjI1In0.027V1QSYNzTkIa2WqH3fEgr8RoxDJGXCn66aQFZI_6k
 
 
+
+###
+
+POST  http://127.0.0.1:8000/user/login/
+Content-Type: application/json
+
+{
+    "username_or_email": "hamzzy",
+    "password": "12345678y"
+}
+###
 
 # {   
 #     "username":"hamzzyy",
@@ -124,9 +135,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST http://127.0.0.1:8000/user/verify-email/8621/
+POST http://127.0.0.1:8000/user/delete-account/
 Content-Type: application/json
-# Authorization: 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzI4NzUyLCJpYXQiOjE3NTYzMjg0NTIsImp0aSI6IjA5ZWMzMzNjNTgzZjQ4YmI4MjRhYzM0OTJlMGIyOTI2IiwidXNlcl9pZCI6IjI4In0.zrR0jOMP7OLiQqvnV5KFSjQtznVDUCcbEQ3Lak7M8dM
+
 
 
 ###
@@ -140,12 +152,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/password-reset/request/
+POST educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/password-reset/confirm/3805/
 Content-Type: application/json
 # Authorization: 
 
 {
-    "email": "youss4923@gmail.com"
+    "token" :"3805",
+    "new_password": "new_password123",
+    "new_password_confirm": "new_password123"
 }
 
 ###

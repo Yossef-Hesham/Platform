@@ -21,7 +21,7 @@ urlpatterns = [
     
     # Email verification
     path('verify-email/<str:token>/', views.verify_email, name='verify_email'),
-    path('resend-verification-email/<str:email>/', views.resend_verification_email, name='resend_verification_email'),
+    # path('resend-verification-email/<str:email>/', views.resend_verification_email, name='resend_verification_email'),
 
     # Password management
     path('change-password/', views.change_password, name='change_password'),

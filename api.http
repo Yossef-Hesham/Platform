@@ -19,10 +19,13 @@ Content-Type: application/json
 
 ###
 
-POST  http://127.0.0.1:8000/user/resend_verification_email/youss4923@gmail.com/
+POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
-
+{
+    "username_or_email": "youss4923@gmail.com",
+    "password": "youss4923"
+}
 
 ###
 
@@ -141,20 +144,18 @@ POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.ap
 Content-Type: application/json
 # Authorization: 
 
-
 {
     "email": "youss4923@gmail.com"
 }
 
 ###
-POST http://127.0.0.1:8000/user/password-reset/confirm/5951/
+
+POST http://127.0.0.1:8000/user/password-reset/request/
 Content-Type: application/json
 # Authorization: 
 
 {
-    "token": "5951",
-    "new_password": "youss4923",
-    "new_password_confirm": "youss4923"
+    "email": "youss4923@gmail.com"
 }
 
 

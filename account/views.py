@@ -361,45 +361,68 @@ def change_password(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+import logging
+logger = logging.getLogger(__name__)
+
+from account.models import User 
+from django.conf import settings
+import logging
+
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def password_reset_request(request):
-    """
-    Password reset request endpoint
-    """
-    serializer = PasswordResetRequestSerializer(data=request.data)
+    try:
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=404)
+
+            # Generate reset token
+            token = str(random.randint(1000, 9999))
+            expires_at = timezone.now() + timedelta(hours=1)
+            
+            logger.info(f"Creating token for user {user.id}")
+            
+            # Create reset token
+            reset_token = PasswordResetToken.objects.create(
+                user=user,
+                token=token,
+                expires_at=expires_at
+            )
+            
+            logger.info(f"Token created: {reset_token.id}")
+            
+            # Send reset email
+            subject = 'Password Reset Request - Courses Platform'
+            message = f'''
+            Hello {user.username}, Your password reset code is: {token} '''
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+            
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=from_email,
+                recipient_list=recipient_list,
+                fail_silently=False,
+            )
+            
+            logger.info(f"Password reset email sent to {user.email}")
+            
+            return Response({
+                'message': 'Password reset email sent successfully'
+            }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    if serializer.is_valid():
-        email = serializer.validated_data['email']
-        user = User.objects.get(email=email)
-        
-        # Generate reset token
-        token = str(random.randint(1000, 9999))
-        expires_at = timezone.now() + timedelta(hours=1)
-        
-        PasswordResetToken.objects.create(
-            user=user,
-            token=token,
-            expires_at=expires_at
-        )
-        
-        # Send reset email
-        # reset_url = f"{settings.FRONTEND_URL}/reset-password/{token}"
-        
-        send_mail(
-            subject='Password Reset - Courses Platform',
-            message=f'Click the following link ----(test)---- to reset your password: {token}',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
-        
-        return Response({
-            'message': 'Password reset email sent'
-        }, status=status.HTTP_200_OK)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        logger.error(f"Password reset error: {str(e)}")
+        return Response({'error': 'Internal server error. Please try again later.'}, status=500)
 
 
 @api_view(['POST'])

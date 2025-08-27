@@ -114,20 +114,22 @@ from .models import EmailVerification  # adjust the import path as needed
 
 logger = logging.getLogger(__name__)
 
+
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-def resend_verification_email(request, email):
+def resend_verification_email(request):
     """
     Send email verification token to user
-    
-    Args:
-        request: HTTP request object
-        email: User email address from URL parameter
-        
-    Returns:
-        JsonResponse: Success/failure status with appropriate message
     """
     try:
+        # Get email from request data, not request.email
+        email = request.data.get('email')
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'error': 'Email is required'
+            }, status=400)
+        
         # Get user or return 404 if not found
         user = get_object_or_404(User, email=email)
         
@@ -148,10 +150,8 @@ def resend_verification_email(request, email):
         # Send verification email
         send_mail(
             subject='Verify Your Email - Courses Platform',
-            message=f'Your verification code is: {token}\n\n'
-                   f'This code will expire in 24 hours.\n\n'
-                   f'If you did not request this verification, please ignore this email.',
-            from_email=settings.EMAIL_HOST_USER,
+            message=f'Your email verification code is: {token}\n\nThis code will expire in 24 hours.',
+            from_email=settings.DEFAULT_FROM_EMAIL,  # Use DEFAULT_FROM_EMAIL instead of EMAIL_HOST_USER
             recipient_list=[user.email],
             fail_silently=False,
         )
@@ -160,8 +160,8 @@ def resend_verification_email(request, email):
         
         return JsonResponse({
             'success': True,
-            'message': 'Verification email sent successfully',
-            'token': token  # You can remove this in production for security
+            'message': 'Verification email sent successfully'
+            # Removed token for security - don't return it in production
         })
         
     except User.DoesNotExist:
@@ -177,6 +177,7 @@ def resend_verification_email(request, email):
             'success': False,
             'error': 'Failed to send verification email'
         }, status=500)
+
 
 
 from rest_framework.parsers import JSONParser

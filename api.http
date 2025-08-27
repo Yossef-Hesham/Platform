@@ -19,13 +19,9 @@ Content-Type: application/json
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+POST  http://127.0.0.1:8000/user/verify-email/7848/
 Content-Type: application/json
 
-{
-    "username_or_email": "youss4923@gmail.com",
-    "password": "new_password123"
-}
 
 ###
 
@@ -39,14 +35,20 @@ Content-Type: application/json
 
 ###
 
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/login/
+POST https://educational-platform-md062b9uy-youssefs-projects-e2c35ebf.vercel.app/user/delete-account/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzMwMDI4LCJpYXQiOjE3NTYzMjk3MjgsImp0aSI6IjNkODkxNjY1MjYxYjRiYjRiZDJlZTIwZDc1MGI2MzQ1IiwidXNlcl9pZCI6IjIyIn0.pAhW4WRxuppUe3KmUELv7TBG2i2WStnj4FxUGVc9t5U
+
+
+###
+
+POST https://educational-platform-md062b9uy-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 {
     "username_or_email":"joo_hamzy",
-    "password":"elhamzy111"
+    "password":"12345678y"
 }
-
 
 ###
 

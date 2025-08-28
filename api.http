@@ -1,17 +1,17 @@
 
 
 
-POST  http://127.0.0.1:8000/user/register/
+POST  https://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
 Content-Type: application/json
 
 {
     "username":"joooooo",
-    "email":" youss4923@gmail.com",
+    "email":" youssefabdelallem23@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
     "last_name":"elh",
-    "user_type":"student",
+    "user_type":"admin",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }

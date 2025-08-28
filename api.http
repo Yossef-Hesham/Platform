@@ -1,7 +1,7 @@
 
 
 
-POST  https://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
 Content-Type: application/json
 
 {

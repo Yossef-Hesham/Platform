@@ -118,13 +118,16 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('new_db_POSTGRES_DATABASE'),
-        'USER': os.getenv('new_db_POSTGRES_USER'),
-        'PASSWORD': os.getenv('new_db_POSTGRES_PASSWORD'),
-        'HOST': os.getenv('new_db_POSTGRES_HOST'),
-        'PORT': os.getenv('new_db_POSTGRES_PORT'),
+        'NAME': os.environ.get('new_db_POSTGRES_DATABASE', 'postgres'),
+        'USER': os.environ.get('new_db_POSTGRES_USER', 'postgres.maxviexeaiglwlnfelre'),
+        'PASSWORD': os.environ.get('new_db_POSTGRES_PASSWORD', 'THwnZSTDTi84QhxP'),
+        'HOST': os.environ.get('new_db_POSTGRES_HOST', 'aws-1-us-east-1.pooler.supabase.com'),  # Use pooler host
+        'PORT': os.environ.get('new_db_POSTGRES_PORT', '6543'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
-} 
+}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

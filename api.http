@@ -1,29 +1,67 @@
 
 
 
-POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
+POST  http://127.0.0.1:8000/user/register/
 Content-Type: application/json
 
 {
-    "username":"joooooo",
-    "email":" youssefabdelallem23@gmail.com",
+    "username":"eljoo",
+    "email":" youss49223@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
     "last_name":"elh",
-    "user_type":"admin",
+    "user_type":"teacher",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }
 
+###
+
+POST  http://127.0.0.1:8000/user/verify-email/3165/
+Content-Type: application/json
+
+
 
 ###
 
-POST  https://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/resend-verification-email/
+POST  http://127.0.0.1:8000/user/login/
+Content-Type: application/json
+
+
+{
+    "username_or_email": "eljoo",
+    "password": "12345678y"
+}
+
+
+
+
+###
+
+GET http://127.0.0.1:8000/teacher/reviews/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NjY1NTg0LCJpYXQiOjE3NTY2NjUyODQsImp0aSI6IjNkMGQ1ZjUyMjI1MzRiM2NhYzEzZTY1NWVmNjQ2MjQ5IiwidXNlcl9pZCI6IjEwIn0.wZqdzYj2Ug7-A69o3DGPpM7w4KyH7K25T1qLHbgQtkI
+
+
+
+
+#     "price": 100,
+#     "category": "Math",
+#     "level": "Beginner",
+#     "teacher": 1
+# }
+
+
+
+###
+
+POST  https://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 {
-    "email": "youss4923@gmail.com"
+    "username_or_email": "joooooo",
+    "password": "12345678y"
 }
 
 ###
@@ -181,7 +219,7 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:8000/api/change-password/
+POST http://127.0.0.1:8000/teacher/courses/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNzUzLCJpYXQiOjE3NTU5NjM0NTQsImp0aSI6ImI1YjBjZjZmNWU5OTQ2ZDBiMmFiYThkOTI4NDY2Y2UzIiwidXNlcl9pZCI6IjcifQ.WtfSA_6GG3yMP3VpO11cTuUaNfk1pPjvHgVoL4WHnMw
 

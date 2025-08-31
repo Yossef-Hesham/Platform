@@ -36,7 +36,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
 # else:
 # ALLOWED_HOSTS = ['13.61.23.20', 'http://13.61.23.20/', '127.0.0.1']
-DEBUG = False
+DEBUG = os.environ.get("DB_LIVE", "False") == "True"
 
 
 # CSRF_TRUSTED_ORIGINS = [
@@ -120,26 +120,26 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 DB_LIVE = os.getenv("DB_LIVE")
 
 
-# if DB_LIVE in ["False", False]:
+if DB_LIVE in ["False", False]:
     
-#     DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-    
-# else:
-DATABASES = {
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-} 
+}
+    
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+        }
+    } 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

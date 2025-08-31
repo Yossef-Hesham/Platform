@@ -1,12 +1,13 @@
 
 
 
-POST  http://127.0.0.1:8000/user/register/
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
+
 Content-Type: application/json
 
 {
-    "username":"eljoo",
-    "email":" youss49223@gmail.com",
+    "username":"youssef",
+    "email":"youssef49233@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
@@ -18,19 +19,19 @@ Content-Type: application/json
 
 ###
 
-POST  http://127.0.0.1:8000/user/verify-email/3165/
+POST   educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/9907/
 Content-Type: application/json
 
 
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 
 {
-    "username_or_email": "eljoo",
+    "username_or_email": "youssef",
     "password": "12345678y"
 }
 
@@ -39,18 +40,20 @@ Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/teacher/reviews/
+POST educational-platform-git-t-dash-youssefs-projects-e2c35ebf.vercel.app/teacher/courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NjY1NTg0LCJpYXQiOjE3NTY2NjUyODQsImp0aSI6IjNkMGQ1ZjUyMjI1MzRiM2NhYzEzZTY1NWVmNjQ2MjQ5IiwidXNlcl9pZCI6IjEwIn0.wZqdzYj2Ug7-A69o3DGPpM7w4KyH7K25T1qLHbgQtkI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NjczNDc3LCJpYXQiOjE3NTY2NzMxNzcsImp0aSI6ImZjZDhhYzA0NzQ3MTQ3MmU5MzYzY2EwNjQ2MTBlYzk2IiwidXNlcl9pZCI6IjEwIn0.KHSetJN4Zvdib_ghMdO1hCOuYb8CPf76d3mpPTJVEKU
 
 
+{
+    "title": "New Course Title",
+    "description": "Course Description",
+    "price": 100,
+    "category": "Math",
+    "level": "Beginner",
+    "teacher": 1
+}
 
-
-#     "price": 100,
-#     "category": "Math",
-#     "level": "Beginner",
-#     "teacher": 1
-# }
 
 
 

@@ -130,6 +130,7 @@ if DB_LIVE in ["False", False]:
 }
     
 else:
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

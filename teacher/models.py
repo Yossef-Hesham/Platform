@@ -46,7 +46,6 @@ class Course(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-        db_table = 'teacher_course'
     
     def __str__(self):
         return f"{self.title} - {self.teacher.full_name}"

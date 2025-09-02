@@ -40,9 +40,9 @@ Content-Type: application/json
 
 ###
 
-POST educational-platform-git-t-dash-youssefs-projects-e2c35ebf.vercel.app/teacher/courses/
+GET educational-platform-git-t-dash-youssefs-projects-e2c35ebf.vercel.app/teacher/courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NjczNDc3LCJpYXQiOjE3NTY2NzMxNzcsImp0aSI6ImZjZDhhYzA0NzQ3MTQ3MmU5MzYzY2EwNjQ2MTBlYzk2IiwidXNlcl9pZCI6IjEwIn0.KHSetJN4Zvdib_ghMdO1hCOuYb8CPf76d3mpPTJVEKU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NzkxOTg3LCJpYXQiOjE3NTY3OTE2ODcsImp0aSI6IjJhYTgzYmFmNTU0MDQ4NzU5NjE1YmZhYmVlNjAwYTgzIiwidXNlcl9pZCI6IjEwIn0.llEq49tb8B3dj8TcdmarQtdxdk7GSV8ftwnRCMEdB_c
 
 
 {
@@ -53,6 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
     "level": "Beginner",
     "teacher": 1
 }
+
 
 
 

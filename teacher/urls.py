@@ -1,4 +1,4 @@
-# teacherdashboard/urls.py
+# teacher/urls.py
 from django.urls import path
 from . import views
 
@@ -24,19 +24,19 @@ urlpatterns = [
     path('questions/<int:pk>/', views.QuestionDetailView.as_view(), name='question_detail'),
     
     # Student Enrollment Management
-    # path('enrollments/', views.CourseEnrollmentsView.as_view(), name='course_enrollments'),
-    # path('enrollments/bulk/', views.BulkEnrollStudentsView.as_view(), name='bulk_enroll_students'),
-    # path('courses/<int:course_id>/students/<int:student_id>/remove/', views.remove_student_from_course, name='remove_student'),
+    path('enrollments/', views.CourseEnrollmentsView.as_view(), name='course_enrollments'),
+    path('enrollments/bulk/', views.BulkEnrollStudentsView.as_view(), name='bulk_enroll_students'),
+    path('courses/<int:course_id>/students/<int:student_id>/remove/', views.remove_student_from_course, name='remove_student'),
     
-    # Analytics and Reporting   
+    # Analytics and Reporting
     path('analytics/dashboard/', views.TeacherDashboardAnalyticsView.as_view(), name='dashboard_analytics'),
     path('analytics/courses/<int:course_id>/', views.CourseAnalyticsView.as_view(), name='course_analytics'),
-    # path('analytics/students/', views.StudentProgressView.as_view(), name='student_progress'),
+    path('analytics/students/', views.StudentProgressView.as_view(), name='student_progress'),
     
     # Quiz Results and Analysis
-    # path('quiz-results/', views.QuizResultsView.as_view(), name='quiz_results'),
-    # path('quiz-attempts/<int:attempt_id>/', views.QuizAttemptDetailView.as_view(), name='quiz_attempt_detail'),
+    path('quiz-results/', views.QuizResultsView.as_view(), name='quiz_results'),
+    path('quiz-attempts/<int:attempt_id>/', views.QuizAttemptDetailView.as_view(), name='quiz_attempt_detail'),
     
     # Course Reviews
-    # path('reviews/', views.CourseReviewsView.as_view(), name='course_reviews'),
+    path('reviews/', views.CourseReviewsView.as_view(), name='course_reviews'),
 ]

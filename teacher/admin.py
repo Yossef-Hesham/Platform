@@ -1,12 +1,10 @@
-# teacherdashboard/admin.py
+# teacher/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Course, Section, Quiz, Question, Choice, Enrollment,
     SectionView, QuizAttempt, QuizAnswer, CourseReview
 )
-
-
 
 
 @admin.register(Course)

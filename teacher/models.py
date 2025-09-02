@@ -1,4 +1,4 @@
-# teacherdashboard/models.py
+# teacher/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
@@ -21,7 +21,7 @@ class Course(models.Model):
         ('advanced', 'Advanced'),
     ]
     
-    title = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200)
     description = models.TextField()
     teacher = models.ForeignKey(
         User,
@@ -46,6 +46,7 @@ class Course(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        db_table = 'teacherdashboard_course'
     
     def __str__(self):
         return f"{self.title} - {self.teacher.full_name}"

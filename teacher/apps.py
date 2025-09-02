@@ -1,8 +1,8 @@
-# teacherdashboard/apps.py
+# teacher/apps.py
 from django.apps import AppConfig
 
 
-class TeacherdashboardConfig(AppConfig):
+class TeacherConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'teacher'
     verbose_name = 'Teacher Dashboard'

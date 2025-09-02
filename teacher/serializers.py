@@ -1,4 +1,4 @@
-# teacherdashboard/serializers.py
+# teacher/serializers.py
 from rest_framework import serializers
 from django.db import transaction
 from account.models import User
@@ -12,7 +12,7 @@ class CourseListSerializer(serializers.ModelSerializer):
     """
     Serializer for course list view
     """
-    teacher_name = serializers.ReadOnlyField(source='teacher.username')
+    teacher_name = serializers.ReadOnlyField(source='teacher.full_name')
     average_rating = serializers.SerializerMethodField()
     
     class Meta:

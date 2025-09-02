@@ -1,4 +1,4 @@
-# teacherdashboard/views.py
+# teacher/views.py
 from rest_framework import status, permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response

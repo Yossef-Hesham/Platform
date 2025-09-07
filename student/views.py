@@ -15,10 +15,25 @@ from django.utils import timezone
 from django.db.models import Sum, Avg
 from datetime import timedelta
 
+
 class IsStudent(permissions.BasePermission):
     """Check if user is a student"""
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_student
+
+
+
+from rest_framework.permissions import AllowAny
+
+from rest_framework.generics import ListCreateAPIView
+
+class GETAllCourses(ListCreateAPIView):
+    serializer_class = CourseListSerializer
+    queryset = Course.objects.all()
+    permission_classes = [AllowAny]  # Allow any user to view the list of courses
+
+
+
 
 class StudentDashboardView(APIView):
     """Student dashboard overview"""

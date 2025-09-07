@@ -56,7 +56,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+POST  http://educational-platform-git-s-dash-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 {
@@ -68,9 +68,9 @@ Content-Type: application/json
 
 
 
-GET http://127.0.0.1:8000/student/quiz/1/
+GET http://127.0.0.1:8000/student/get-all-courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MTg2MTcwLCJpYXQiOjE3NTcxODI1NzAsImp0aSI6ImY2MmE4Y2I4Y2Y4NDRiYzhiNmQzZjBhMGQ2YmVhNTRiIiwidXNlcl9pZCI6IjEyIn0.MR9odHH_IsGwDVqBp4At-LnzfABM8XNygARCaQNOLBU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MjU3NTcxLCJpYXQiOjE3NTcyNTM5NzEsImp0aSI6IjUwNTJkZDIyNWUzODQzNmZhZGY1YWMwNTUwYjAxNWUyIiwidXNlcl9pZCI6IjEyIn0.8rKKSYGBjT6-yzdZLhuXW-gQEsRzPOzkdpSt-gICLZY
 
 
 ###

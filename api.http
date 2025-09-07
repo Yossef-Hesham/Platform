@@ -66,11 +66,47 @@ Content-Type: application/json
 ###
 
 
-
-
-GET http://127.0.0.1:8000/student/get-all-courses/
+POST http://127.0.0.1:8000/student/course/7/section/22/quiz/7/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MjU3NTcxLCJpYXQiOjE3NTcyNTM5NzEsImp0aSI6IjUwNTJkZDIyNWUzODQzNmZhZGY1YWMwNTUwYjAxNWUyIiwidXNlcl9pZCI6IjEyIn0.8rKKSYGBjT6-yzdZLhuXW-gQEsRzPOzkdpSt-gICLZY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc1NzA4LCJpYXQiOjE3NTcyNzIxMDgsImp0aSI6ImQ4NzA1ZGI1NTQwZjQ3YTlhYWFlNDViNDA0MWU1OGIxIiwidXNlcl9pZCI6IjEyIn0.l3CR-eVfWJ_Hcb7S37IQGrVnyhBrJ1Kmvt-0lfs-cTw
+
+
+{
+  "attempt_id": 5,
+  "answers": [
+    {
+      "question_id": 3,
+      "choice_id": 5
+    }
+  ]
+}
+###
+
+
+GET  http://127.0.0.1:8000/teacher/quizzes/7/questions/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc1NDQ1LCJpYXQiOjE3NTcyNzE4NDUsImp0aSI6Ijc1NWRjNjVmYmY1NjQwMDVhN2EzNjhmOWJkZWM1MzUxIiwidXNlcl9pZCI6IjEwIn0.P9cTJPr28ck6wiYCRZUX4iLFWRF-4fwAAgmdjrwTy4U
+
+{
+  "question_text": "BAcktracking ORRR GRAPHH?",
+  "question_type": "multiple_choice",
+  "points": 10,
+  "order": 6,
+  "explanation": "Updated explanation",
+  "choices": [
+    {
+      "choice_text": "Option A",
+      "is_correct": true,
+      "order": 1
+    },
+    {
+      "choice_text": "Option B",
+      "is_correct": false,
+      "order": 2
+    }
+  ]
+}
+
 
 
 ###

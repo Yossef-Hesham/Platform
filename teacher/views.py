@@ -130,33 +130,15 @@ class SectionDetailView(RetrieveUpdateDestroyAPIView):
 
 
 # Quiz Management Views
-class QuizCreateView(APIView):
-    """
-    Create a quiz for a section
-    """
-    permission_classes = [IsTeacher]
+from rest_framework.permissions import IsAuthenticated
+class QuizCreateView(generics.CreateAPIView):
+    serializer_class = QuizSerializer
+    permission_classes = [IsAuthenticated]
     
-    def post(self, request, section_id):
-        section = get_object_or_404(
-            Section, 
-            id=section_id, 
-            course__teacher=request.user
-        )
-        
-        # Check if section already has a quiz
-        if hasattr(section, 'quiz'):
-            return Response({
-                'error': 'This section already has a quiz'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = QuizSerializer(data=request.data)
-        if serializer.is_valid():
-            quiz = serializer.save(section=section)
-            section.course.update_statistics()
-            return Response(QuizSerializer(quiz).data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    def perform_create(self, serializer):
+        section_id = self.kwargs['section_id']
+        section = get_object_or_404(Section, id=section_id)
+        serializer.save(section=section)
 
 class QuizDetailView(RetrieveUpdateDestroyAPIView):
     """

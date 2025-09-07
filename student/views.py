@@ -25,9 +25,9 @@ class IsStudent(permissions.BasePermission):
 
 from rest_framework.permissions import AllowAny
 
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListAPIView
 
-class GETAllCourses(ListCreateAPIView):
+class GETAllCourses(ListAPIView):
     serializer_class = CourseListSerializer
     queryset = Course.objects.all()
     permission_classes = [AllowAny]  # Allow any user to view the list of courses
@@ -247,15 +247,22 @@ class SectionDetailView(APIView):
             'course_completed': False
         })
         
+from django.db import transaction
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 class TakeQuizView(APIView):
-    """Start a quiz attempt"""
+    """Start and submit a quiz attempt"""
     permission_classes = [IsStudent]
     
-    def get(self, request, quiz_id):
+    def get(self, request, course_id, section_id, quiz_id):
         student = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
         
+        section = get_object_or_404(Section, id=section_id, course_id=course_id)
+        quiz = get_object_or_404(Quiz, section=section, id=quiz_id)
+
         # Check if student is enrolled in the course
         enrollment = get_object_or_404(
             Enrollment, 
@@ -264,7 +271,7 @@ class TakeQuizView(APIView):
             is_active=True
         )
         
-        # Check if student has attempts remaining
+        # Check if student has attempts remaining (atomic operation)
         previous_attempts = QuizAttempt.objects.filter(
             student=student,
             quiz=quiz
@@ -280,7 +287,8 @@ class TakeQuizView(APIView):
         attempt = QuizAttempt.objects.create(
             student=student,
             quiz=quiz,
-            attempt_number=previous_attempts + 1
+            attempt_number=previous_attempts + 1,
+            started_at=timezone.now()
         )
         
         # Get quiz questions (without correct answers)
@@ -288,101 +296,77 @@ class TakeQuizView(APIView):
         question_data = []
         
         for question in questions:
-            if question.question_type in ['multiple_choice', 'true_false']:
+            question_dict = {
+                'id': question.id,
+                'question_text': question.question_text,
+                'question_type': question.question_type,
+                'points': question.points,
+                'order': question.order
+            }
+            
+            if question.question_type in ['multiple_choice', 'true_false', 'multiple_answer']:
                 choices = question.choices.all().order_by('order')
-                question_data.append({
-                    'id': question.id,
-                    'question_text': question.question_text,
-                    'question_type': question.question_type,
-                    'points': question.points,
-                    'choices': [
-                        {'id': choice.id, 'choice_text': choice.choice_text}
-                        for choice in choices
-                    ]
-                })
-            else:
-                question_data.append({
-                    'id': question.id,
-                    'question_text': question.question_text,
-                    'question_type': question.question_type,
-                    'points': question.points
-                })
+                question_dict['choices'] = [
+                    {'id': choice.id, 'choice_text': choice.choice_text}
+                    for choice in choices
+                ]
+            
+            question_data.append(question_dict)
         
         return Response({
             'attempt_id': attempt.id,
             'quiz_title': quiz.title,
             'time_limit_minutes': quiz.time_limit_minutes,
-            'questions': question_data
+            'questions': question_data,
+            'started_at': attempt.started_at
         })
     
-    def post(self, request, quiz_id):
-        # Submit quiz answers
+    def post(self, request, course_id, section_id, quiz_id):
+    # Submit quiz answers
         student = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
+        
+        # First get the section and quiz to verify they exist
+        section = get_object_or_404(Section, id=section_id, course_id=course_id)
+        quiz = get_object_or_404(Quiz, section=section, id=quiz_id)
+        
         attempt_id = request.data.get('attempt_id')
         
-        attempt = get_object_or_404(
-            QuizAttempt,
-            id=attempt_id,
-            student=student,
-            quiz=quiz,
-            is_completed=False
-        )
+        if not attempt_id:
+            return Response(
+                {'error': 'attempt_id is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        answers = request.data.get('answers', [])
+        # Debug: Print attempt details
+        print(f"Looking for attempt: {attempt_id}, student: {student.id}, quiz: {quiz_id}")
         
-        # Process each answer
-        for answer_data in answers:
-            question_id = answer_data.get('question_id')
-            question = get_object_or_404(Question, id=question_id, quiz=quiz)
-            
-            if question.question_type in ['multiple_choice', 'true_false']:
-                choice_id = answer_data.get('choice_id')
-                selected_choice = get_object_or_404(Choice, id=choice_id, question=question)
-                
-                QuizAnswer.objects.create(
-                    attempt=attempt,
-                    question=question,
-                    selected_choice=selected_choice
-                )
-            else:
-                text_answer = answer_data.get('text_answer', '')
-                
-                QuizAnswer.objects.create(
-                    attempt=attempt,
-                    question=question,
-                    text_answer=text_answer
-                )
-        
-        # Complete the attempt and calculate score
-        attempt.is_completed = True
-        attempt.completed_at = timezone.now()
-        attempt.calculate_score()
-        
-        # Update enrollment quiz statistics
-        enrollment = Enrollment.objects.get(
-            student=student,
-            course=quiz.section.course,
-            is_active=True
-        )
-        
-        if attempt.is_passed:
-            passed_quizzes = QuizAttempt.objects.filter(
+        try:
+            attempt = QuizAttempt.objects.get(
+                id=attempt_id,
                 student=student,
-                quiz__section__course=enrollment.course,
-                is_passed=True
-            ).values('quiz').distinct().count()
-            
-            enrollment.quizzes_passed = passed_quizzes
-            enrollment.save(update_fields=['quizzes_passed'])
-        
-        return Response({
-            'score': attempt.score,
-            'is_passed': attempt.is_passed,
-            'correct_answers': attempt.earned_points,
-            'total_questions': attempt.total_points
-        })
-
+                quiz=quiz,
+                is_completed=False
+            )
+        except QuizAttempt.DoesNotExist:
+            # Check if attempt exists but is completed
+            try:
+                completed_attempt = QuizAttempt.objects.get(
+                    id=attempt_id,
+                    student=student,
+                    quiz=quiz
+                )
+                if completed_attempt.is_completed:
+                    return Response(
+                        {'error': 'This quiz attempt has already been submitted'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            except QuizAttempt.DoesNotExist:
+                return Response(
+                    {'error': 'Invalid attempt_id or you do not have permission to access this attempt'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+    
+    # Rest of your submission code...
 class QuizResultsView(APIView):
     """View quiz results and correct answers"""
     permission_classes = [IsStudent]

@@ -102,7 +102,7 @@ class QuizSerializer(serializers.ModelSerializer):
     """
     Serializer for quizzes
     """
-    questions = QuestionSerializer(many=True, read_only=True)
+    questions = QuestionSerializer(many=True, required=False)  # Remove read_only=True
     question_count = serializers.SerializerMethodField()
     
     class Meta:
@@ -117,13 +117,47 @@ class QuizSerializer(serializers.ModelSerializer):
     
     def get_question_count(self, obj):
         return obj.questions.count()
-
-
+    
+    def create(self, validated_data):
+        questions_data = validated_data.pop('questions', [])
+        quiz = Quiz.objects.create(**validated_data)
+        
+        for question_data in questions_data:
+            choices_data = question_data.pop('choices', [])
+            question = Question.objects.create(quiz=quiz, **question_data)
+            
+            for choice_data in choices_data:
+                Choice.objects.create(question=question, **choice_data)
+        
+        return quiz
+    
+    def update(self, instance, validated_data):
+        questions_data = validated_data.pop('questions', [])
+        
+        # Update quiz fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Update questions
+        if questions_data:
+            # Delete existing questions and choices
+            instance.questions.all().delete()
+            
+            # Create new questions with choices
+            for question_data in questions_data:
+                choices_data = question_data.pop('choices', [])
+                question = Question.objects.create(quiz=instance, **question_data)
+                
+                for choice_data in choices_data:
+                    Choice.objects.create(question=question, **choice_data)
+        
+        return instance
 class SectionSerializer(serializers.ModelSerializer):
     """
     Serializer for course sections
     """
-    quiz = QuizSerializer(read_only=True)
+    quiz = QuizSerializer(required=False, allow_null=True)
     has_quiz = serializers.SerializerMethodField()
     
     class Meta:
@@ -136,7 +170,37 @@ class SectionSerializer(serializers.ModelSerializer):
     
     def get_has_quiz(self, obj):
         return hasattr(obj, 'quiz')
-
+    
+    def create(self, validated_data):
+        quiz_data = validated_data.pop('quiz', None)
+        section = Section.objects.create(**validated_data)
+        
+        if quiz_data:
+            # Create quiz for this section
+            Quiz.objects.create(section=section, **quiz_data)
+        
+        return section
+    
+    def update(self, instance, validated_data):
+        quiz_data = validated_data.pop('quiz', None)
+        
+        # Update section fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Handle quiz update or creation
+        if quiz_data is not None:
+            if hasattr(instance, 'quiz'):
+                # Update existing quiz
+                quiz_serializer = QuizSerializer(instance.quiz, data=quiz_data, partial=True)
+                quiz_serializer.is_valid(raise_exception=True)
+                quiz_serializer.save()
+            else:
+                # Create new quiz
+                Quiz.objects.create(section=instance, **quiz_data)
+        
+        return instance
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     """

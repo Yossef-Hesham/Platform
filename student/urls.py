@@ -9,7 +9,10 @@ urlpatterns = [
     path('my-courses/', views.MyCoursesView.as_view(), name='my_courses'),
     path('course/<int:course_id>/', views.CourseContentView.as_view(), name='course_content'),
     path('course/<int:course_id>/section/<int:section_order>/', views.SectionDetailView.as_view(), name='section_detail'),
-    path('quiz/<int:quiz_id>/', views.TakeQuizView.as_view(), name='take_quiz'),
+
+
+    path('course/<int:course_id>/section/<int:section_id>/quiz/<int:quiz_id>/', views.TakeQuizView.as_view(), name='take_quiz'),
+
     path('quiz-results/<int:attempt_id>/', views.QuizResultsView.as_view(), name='quiz_results'),
     # path('notes/<int:section_id>/', views.StudentNotesView.as_view(), name='student_notes'),
     path('certificates/<int:course_id>/', views.CertificateView.as_view(), name='certificate'),

@@ -322,7 +322,7 @@ class TakeQuizView(APIView):
         })
     
     def post(self, request, course_id, section_id, quiz_id):
-    # Submit quiz answers
+        """Submit quiz answers"""
         student = request.user
         
         # First get the section and quiz to verify they exist
@@ -340,6 +340,7 @@ class TakeQuizView(APIView):
         # Debug: Print attempt details
         print(f"Looking for attempt: {attempt_id}, student: {student.id}, quiz: {quiz_id}")
         
+        # First try to find the attempt with all conditions
         try:
             attempt = QuizAttempt.objects.get(
                 id=attempt_id,
@@ -348,7 +349,7 @@ class TakeQuizView(APIView):
                 is_completed=False
             )
         except QuizAttempt.DoesNotExist:
-            # Check if attempt exists but is completed
+            # If not found, check if it exists but is completed
             try:
                 completed_attempt = QuizAttempt.objects.get(
                     id=attempt_id,
@@ -360,11 +361,151 @@ class TakeQuizView(APIView):
                         {'error': 'This quiz attempt has already been submitted'},
                         status=status.HTTP_400_BAD_REQUEST
                     )
+                else:
+                    # This shouldn't happen, but if it does, use this attempt
+                    attempt = completed_attempt
             except QuizAttempt.DoesNotExist:
-                return Response(
-                    {'error': 'Invalid attempt_id or you do not have permission to access this attempt'},
-                    status=status.HTTP_404_NOT_FOUND
+                # Check if the attempt exists but belongs to different quiz or user
+                try:
+                    # Check if attempt exists with different quiz
+                    wrong_quiz_attempt = QuizAttempt.objects.get(
+                        id=attempt_id,
+                        student=student
+                    )
+                    return Response(
+                        {'error': f'Attempt belongs to quiz ID {wrong_quiz_attempt.quiz.id}, not {quiz_id}'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                except QuizAttempt.DoesNotExist:
+                    try:
+                        # Check if attempt exists with different user
+                        wrong_user_attempt = QuizAttempt.objects.get(id=attempt_id)
+                        return Response(
+                            {'error': 'This attempt belongs to another user'},
+                            status=status.HTTP_403_FORBIDDEN
+                        )
+                    except QuizAttempt.DoesNotExist:
+                        # Attempt doesn't exist at all
+                        return Response(
+                            {'error': 'Quiz attempt not found. Please start the quiz first.'},
+                            status=status.HTTP_404_NOT_FOUND
+                        )
+    
+    # Check time limit
+        time_elapsed = (timezone.now() - attempt.started_at).total_seconds() / 60
+        if time_elapsed > quiz.time_limit_minutes:
+            return Response(
+                {'error': 'Time limit exceeded'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        answers = request.data.get('answers', [])
+        
+        # Process each answer within a transaction
+        try:
+            with transaction.atomic():
+                for answer_data in answers:
+                    question_id = answer_data.get('question_id')
+                    if not question_id:
+                        continue
+                    
+                    question = get_object_or_404(Question, id=question_id, quiz=quiz)
+                    
+                    if question.question_type in ['multiple_choice', 'true_false']:
+                        choice_id = answer_data.get('choice_id')
+                        if choice_id:
+                            selected_choice = get_object_or_404(Choice, id=choice_id, question=question)
+                            QuizAnswer.objects.create(
+                                attempt=attempt,
+                                question=question,
+                                selected_choice=selected_choice
+                            )
+                    
+                    elif question.question_type == 'multiple_answer':
+                        choice_ids = answer_data.get('choice_ids', [])
+                        for choice_id in choice_ids:
+                            selected_choice = get_object_or_404(Choice, id=choice_id, question=question)
+                            QuizAnswer.objects.create(
+                                attempt=attempt,
+                                question=question,
+                                selected_choice=selected_choice
+                            )
+                    
+                    else:  # text answer questions
+                        text_answer = answer_data.get('text_answer', '')
+                        QuizAnswer.objects.create(
+                            attempt=attempt,
+                            question=question,
+                            text_answer=text_answer
+                        )
+                
+                # Complete the attempt and calculate score
+                attempt.is_completed = True
+                attempt.completed_at = timezone.now()
+                attempt.calculate_score()  # Make sure this method exists in your model
+                attempt.save()
+                
+                # Update enrollment quiz statistics
+                enrollment = Enrollment.objects.get(
+                    student=student,
+                    course=quiz.section.course,
+                    is_active=True
                 )
+                
+                if attempt.is_passed:
+                    passed_quizzes = QuizAttempt.objects.filter(
+                        student=student,
+                        quiz__section__course=enrollment.course,
+                        is_passed=True
+                    ).values('quiz').distinct().count()
+                    
+                    enrollment.quizzes_passed = passed_quizzes
+                    enrollment.save(update_fields=['quizzes_passed'])
+        
+        except Exception as e:
+            return Response(
+                {'error': f'Error processing answers: {str(e)}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        return Response({
+            'attempt_id': attempt.id,
+            'score': attempt.score,
+            'is_passed': attempt.is_passed,
+            'correct_answers': attempt.earned_points,
+            'total_questions': attempt.total_points,
+            'time_taken_minutes': round(time_elapsed, 2),
+            'message': 'Quiz submitted successfully'
+        })
+    def calculate_score(self):
+        """Calculate the score for this attempt"""
+        answers = self.answers.all()
+        total_points = 0
+        earned_points = 0
+        
+        for answer in answers:
+            total_points += answer.question.points
+            
+            if answer.question.question_type in ['multiple_choice', 'true_false']:
+                if answer.selected_choice and answer.selected_choice.is_correct:
+                    earned_points += answer.question.points
+            
+            elif answer.question.question_type == 'multiple_answer':
+                # For multiple answer, all correct choices must be selected
+                correct_choices = answer.question.choices.filter(is_correct=True)
+                selected_correct = answer.selected_choices.filter(is_correct=True)
+                if correct_choices.count() == selected_correct.count() == answer.selected_choices.count():
+                    earned_points += answer.question.points
+            
+            # For text answers, you might need manual grading
+            # else:
+            #     # Text answers typically require manual grading
+            #     pass
+        
+        self.earned_points = earned_points
+        self.total_points = total_points
+        self.score = (earned_points / total_points * 100) if total_points > 0 else 0
+        self.is_passed = self.score >= self.quiz.passing_score
     
     # Rest of your submission code...
 class QuizResultsView(APIView):

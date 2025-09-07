@@ -66,9 +66,9 @@ Content-Type: application/json
 ###
 
 
-POST http://127.0.0.1:8000/student/course/7/section/22/quiz/7/
+GET http://127.0.0.1:8000/student/course/7/section/22/quiz/7/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc1NzA4LCJpYXQiOjE3NTcyNzIxMDgsImp0aSI6ImQ4NzA1ZGI1NTQwZjQ3YTlhYWFlNDViNDA0MWU1OGIxIiwidXNlcl9pZCI6IjEyIn0.l3CR-eVfWJ_Hcb7S37IQGrVnyhBrJ1Kmvt-0lfs-cTw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc5NzYyLCJpYXQiOjE3NTcyNzYxNjMsImp0aSI6ImNmNDVlMzQ3M2RmNTRhOThhN2QwYjFjY2VlN2EzOGRiIiwidXNlcl9pZCI6IjEyIn0.6XhdG4dEvHkQTaWPcosXZLAak2Zvjj6xYNiVDqYhl-Q
 
 
 {
@@ -83,29 +83,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###
 
 
-GET  http://127.0.0.1:8000/teacher/quizzes/7/questions/
+POST  http://127.0.0.1:8000/teacher/sections/22/quiz/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc1NDQ1LCJpYXQiOjE3NTcyNzE4NDUsImp0aSI6Ijc1NWRjNjVmYmY1NjQwMDVhN2EzNjhmOWJkZWM1MzUxIiwidXNlcl9pZCI6IjEwIn0.P9cTJPr28ck6wiYCRZUX4iLFWRF-4fwAAgmdjrwTy4U
+Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc5MDU4LCJpYXQiOjE3NTcyNzU0NTgsImp0aSI6IjYyZDIxMWFmOGFjZjRhN2JiYjRhMThkYTUxYjIwODA2IiwidXNlcl9pZCI6IjEwIn0.YK0r6uSYXJBj1VnYF7bF6VNgPNm9hEUXx9oIK1fOs9Y
 
-{
-  "question_text": "BAcktracking ORRR GRAPHH?",
-  "question_type": "multiple_choice",
-  "points": 10,
-  "order": 6,
-  "explanation": "Updated explanation",
-  "choices": [
-    {
-      "choice_text": "Option A",
-      "is_correct": true,
-      "order": 1
-    },
-    {
-      "choice_text": "Option B",
-      "is_correct": false,
-      "order": 2
-    }
-  ]
-}
 
 
 

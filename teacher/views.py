@@ -1,4 +1,5 @@
 # teacher/views.py
+import traceback
 from rest_framework import status, permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -177,14 +178,29 @@ class QuestionListCreateView(APIView):
         return Response(serializer.data)
     
     def post(self, request, quiz_id):
-        quiz = self.get_quiz(quiz_id)
-        serializer = QuestionSerializer(data=request.data)
-        
-        if serializer.is_valid():
-            question = serializer.save(quiz=quiz)
-            return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            quiz = self.get_quiz(quiz_id)
+            print(f"Found quiz: {quiz.id}, Title: {quiz.title}")
+            
+            serializer = QuestionSerializer(data=request.data)
+            print(f"Request data: {request.data}")
+            
+            if serializer.is_valid():
+                print("Serializer is valid")
+                question = serializer.save(quiz=quiz)
+                print(f"Question created: {question.id}")
+                return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
+            else:
+                print(f"Serializer errors: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            print(f"500 Error in QuestionListCreateView: {str(e)}")
+            print(f"Traceback: {traceback.format_exc()}")
+            return Response(
+                {'error': 'Internal server error', 'details': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class QuestionDetailView(RetrieveUpdateDestroyAPIView):

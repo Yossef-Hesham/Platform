@@ -2,24 +2,23 @@
 
 
 POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
-
 Content-Type: application/json
 
 {
-    "username":"youssef",
-    "email":"youssef49233@gmail.com",
+    "username":"youssef_st",
+    "email":"youssef449233@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
     "last_name":"elh",
-    "user_type":"teacher",
+    "user_type":"student",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }
 
 ###
 
-POST   educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/9907/
+POST   educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/2301/
 Content-Type: application/json
 
 
@@ -40,9 +39,9 @@ Content-Type: application/json
 
 ###
 
-GET educational-platform-git-t-dash-youssefs-projects-e2c35ebf.vercel.app/teacher/courses/
+POST  educational-platform-git-t-dash-youssefs-projects-e2c35ebf.vercel.app/teacher/courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NzkyOTU4LCJpYXQiOjE3NTY3OTI2NTksImp0aSI6IjBlNTcwZGJlOWM5NDRjMWVhNTQ4NGJkNjRiZTY5NGJiIiwidXNlcl9pZCI6IjEwIn0.VpVYzAbYvKq_RrCA7bomCp_p1sDwrhlZiGhAtqxtvVQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NzkzMzc5LCJpYXQiOjE3NTY3OTMwNzksImp0aSI6ImZjNzRlZmM0YzQ1MDQ5Y2Q5ZGQ4NWFiNTYyZGIyOWQ0IiwidXNlcl9pZCI6IjEwIn0.sRIzlcKtleouCKcgb06kznJq_j-G0PsfPukayDagOPY
 
 
 {
@@ -55,193 +54,70 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 
-
-
-
-###
-
-POST  https://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
-Content-Type: application/json
-
-{
-    "username_or_email": "joooooo",
-    "password": "12345678y"
-}
-
-###
-
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/verify-email/0c4f53d1-6a9a-4a4a-9f1d-62a4e87b0047/
-
-Content-Type: application/json
-
-{
-    
-}
-
-###
-
-POST https://educational-platform-md062b9uy-youssefs-projects-e2c35ebf.vercel.app/user/delete-account/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzMwMDI4LCJpYXQiOjE3NTYzMjk3MjgsImp0aSI6IjNkODkxNjY1MjYxYjRiYjRiZDJlZTIwZDc1MGI2MzQ1IiwidXNlcl9pZCI6IjIyIn0.pAhW4WRxuppUe3KmUELv7TBG2i2WStnj4FxUGVc9t5U
-
-
-###
-
-POST https://educational-platform-md062b9uy-youssefs-projects-e2c35ebf.vercel.app/user/login/
-Content-Type: application/json
-
-{
-    "username_or_email":"joo_hamzy",
-    "password":"12345678y"
-}
-
-###
-
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/change-password/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNDQzLCJpYXQiOjE3NTU5NjMxNDMsImp0aSI6IjUyMjA5OTk0YjdhYzQ5OWVhYTY3N2JiZDRiMDhmMDI3IiwidXNlcl9pZCI6IjcifQ.I-mWOgormZiJh5aBGyGtSZ004gKu349BScGG22K9Io8
-
-{
-    "old_password": "elhamzy111",
-    "new_password": "elhamzy222",
-    "new_password_confirm": "elhamzy222"
-}
-
-###
-
-POST https://web-0bben6p5dii9.up-de-fra1-k8s-1.apps.run-on-seenode.com/api/logout/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNDQzLCJpYXQiOjE3NTU5NjMxNDMsImp0aSI6IjUyMjA5OTk0YjdhYzQ5OWVhYTY3N2JiZDRiMDhmMDI3IiwidXNlcl9pZCI6IjcifQ.I-mWOgormZiJh5aBGyGtSZ004gKu349BScGG22K9Io8
-
-
-
-
-
-###
-
-GET https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/profile/parent/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjI0MDQwLCJpYXQiOjE3NTYyMjM3NDAsImp0aSI6ImVhZDdlMmYzNDc5NzQ3ZjY5MDExY2YyYjQxNjQxMDhmIiwidXNlcl9pZCI6IjIyIn0.8Kq5vcFAUCxdmSMYn8-7f1D6OJ2qMCUVdOSZKldlTFI
-
-
-###
-
-POST http://127.0.0.1:8000/user/login/
-Content-Type: application/json
-
-{
-    "username_or_email": "youss4923@gmail.com",
-    "password": "youss4923"
-}
-
-###
-
-POST https://educational-platform-qg3zn6tpl-youssefs-projects-e2c35ebf.vercel.app/user/link-child/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MjI0MDQwLCJpYXQiOjE3NTYyMjM3NDAsImp0aSI6ImVhZDdlMmYzNDc5NzQ3ZjY5MDExY2YyYjQxNjQxMDhmIiwidXNlcl9pZCI6IjIyIn0.8Kq5vcFAUCxdmSMYn8-7f1D6OJ2qMCUVdOSZKldlTFI
-
-
-{
-    "child_username": "test_link"
-}
-
-
-
-###
-
-POST http://127.0.0.1:8000/user/delete-account/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzI5NDUzLCJpYXQiOjE3NTYzMjkxNTMsImp0aSI6Ijg4MGY2YjdmMWVhNjQyYTQ4ODUzMGZhMmQ3MWZhNTU2IiwidXNlcl9pZCI6IjI1In0.027V1QSYNzTkIa2WqH3fEgr8RoxDJGXCn66aQFZI_6k
-
-
-
 ###
 
 POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "hamzzy",
+    "username_or_email": "youssef_st",
     "password": "12345678y"
 }
 ###
 
-# {   
-#     "username":"hamzzyy",
-#     "email":" youssifhamdy333@gmail.com",
-#     "password":"12345678y",
-#     "password_confirm":"12345678y",
-#     "first_name":"joo",
-#     "last_name":"elfess",
-#     "user_type":"student",
-#     "phone_number":"0123456789",
-#     "parent": "joo_hamzy"
 
-# }
+
+
+GET http://127.0.0.1:8000/student/quiz/1/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MTg2MTcwLCJpYXQiOjE3NTcxODI1NzAsImp0aSI6ImY2MmE4Y2I4Y2Y4NDRiYzhiNmQzZjBhMGQ2YmVhNTRiIiwidXNlcl9pZCI6IjEyIn0.MR9odHH_IsGwDVqBp4At-LnzfABM8XNygARCaQNOLBU
 
 
 ###
 
-POST http://127.0.0.1:8000/user/delete-account/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POST http://127.0.0.1:8000/user/login/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MzI4NzUyLCJpYXQiOjE3NTYzMjg0NTIsImp0aSI6IjA5ZWMzMzNjNTgzZjQ4YmI4MjRhYzM0OTJlMGIyOTI2IiwidXNlcl9pZCI6IjI4In0.zrR0jOMP7OLiQqvnV5KFSjQtznVDUCcbEQ3Lak7M8dM
-
-
-
-###
-
-GET  http://127.0.0.1:8000/api/profile/parent/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MTI3NjE3LCJpYXQiOjE3NTYxMjczMTcsImp0aSI6IjEyNjZjNGQ5ODkyYzQ1ZjNhZWViZjc5NzY5NzA2YTU4IiwidXNlcl9pZCI6IjIyIn0.JGQ6rX1GY1gg1D2p-Obd0_nVI3IpJLzd9i_7UqXdwM4
-
-
-
-
-###
-
-POST educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/password-reset/confirm/3805/
-Content-Type: application/json
-# Authorization: 
 
 {
-    "token" :"3805",
-    "new_password": "new_password123",
-    "new_password_confirm": "new_password123"
+    "username_or_email": "youssef_st",
+    "password": "12345678y"
 }
 
 ###
 
-POST http://127.0.0.1:8000/user/password-reset/request/
+GET http://127.0.0.1:8000//payments/
 Content-Type: application/json
-# Authorization: 
-
-{
-    "email": "youss4923@gmail.com"
-}
-
-
-
-###
-
-POST http://127.0.0.1:8000/teacher/courses/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNzUzLCJpYXQiOjE3NTU5NjM0NTQsImp0aSI6ImI1YjBjZjZmNWU5OTQ2ZDBiMmFiYThkOTI4NDY2Y2UzIiwidXNlcl9pZCI6IjcifQ.WtfSA_6GG3yMP3VpO11cTuUaNfk1pPjvHgVoL4WHnMw
-
-{
-    "old_password": "elhamzy333",
-    "new_password": "elhamzy444",
-    "new_password_confirm": "elhamzy444"
-
-}
-
-
-###
-
-POST http://127.0.0.1:8000/api/logout/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1OTYzNzUzLCJpYXQiOjE3NTU5NjM0NTQsImp0aSI6ImI1YjBjZjZmNWU5OTQ2ZDBiMmFiYThkOTI4NDY2Y2UzIiwidXNlcl9pZCI6IjcifQ.WtfSA_6GG3yMP3VpO11cTuUaNfk1pPjvHgVoL4WHnMw
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2ODIzODY4LCJpYXQiOjE3NTY4MjM1NjksImp0aSI6IjU5MDc0NGIwNTBjMDRiMDU5NDNhZWIwM2ExOGI1NTc3IiwidXNlcl9pZCI6IjEyIn0.PT8F64vVPZ8MxMTG9LfMLSDzd5QwDgOQuOk67DyhBUw
 
 ###
 

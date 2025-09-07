@@ -21,7 +21,8 @@ class Course(models.Model):
         ('advanced', 'Advanced'),
     ]
     
-    title = models.CharField(max_length=200)
+    # must be unique , do not forget to do it
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField()
     teacher = models.ForeignKey(
         User,

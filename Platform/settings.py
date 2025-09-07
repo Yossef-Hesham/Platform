@@ -19,6 +19,9 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -65,6 +68,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'teacher',
+    'student',
+    'gateway',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
@@ -81,6 +86,14 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
     
+    
+    
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),   # make it last 1 hour
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),   # refresh token lasts 7 days
+}
 
 
 MIDDLEWARE = [
@@ -205,5 +218,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('FROM_EMAIL')
 EMAIL_HOST_PASSWORD = os.getenv('FROM_EMAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL') # Add this line
+
 
 # FRONTEND_URL=

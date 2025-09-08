@@ -60,9 +60,18 @@ POST  http://educational-platform-git-s-dash-youssefs-projects-e2c35ebf.vercel.a
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef_st",
+    "username_or_email": "youssef",
     "password": "12345678y"
 }
+###
+
+
+GET http://127.0.0.1:8000/teacher/enrollments/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzQ4NzI5LCJpYXQiOjE3NTczNDUxMjksImp0aSI6ImQ4ODJlZDUwMmQyMjRmYzk4NGIxMzE5MjdmMGE3YTRhIiwidXNlcl9pZCI6IjEwIn0.JMZQ0jjoQMg1riAknAXRruf65VIgXISC-yjwoBdTUbY
+
+
+
 ###
 
 
@@ -80,12 +89,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
     }
   ]
 }
+
 ###
 
 
-POST  http://127.0.0.1:8000/teacher/sections/22/quiz/
+GET  http://127.0.0.1:8000/teacher/quizzes/7/questions/
 Content-Type: application/json
-Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3Mjc5MDU4LCJpYXQiOjE3NTcyNzU0NTgsImp0aSI6IjYyZDIxMWFmOGFjZjRhN2JiYjRhMThkYTUxYjIwODA2IiwidXNlcl9pZCI6IjEwIn0.YK0r6uSYXJBj1VnYF7bF6VNgPNm9hEUXx9oIK1fOs9Y
+Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MjgzMjgxLCJpYXQiOjE3NTcyNzk2ODEsImp0aSI6ImQ2ZmEzMTk2MGRmMzQ5MmE5YjM4NTJkMmRmM2JhZDY3IiwidXNlcl9pZCI6IjEwIn0.TiIeLfgtrRyU6rX2xgAc6JYXoZ8SqqPr4pwsBmO71EQ
+
 
 
 

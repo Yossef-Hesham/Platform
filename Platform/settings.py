@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'account',
     'teacher',
     'student',
+    'parent',
     'gateway',
     'rest_framework',
     'rest_framework_simplejwt',

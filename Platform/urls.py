@@ -12,6 +12,7 @@ urlpatterns = [
     path('user/', include('account.urls')),
     path('teacher/', include('teacher.urls')),
     path('student/', include('student.urls')),
+    path('parent/', include('parent.urls')),
     
 
     # for documenting api

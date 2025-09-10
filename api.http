@@ -1,38 +1,49 @@
 
 
 
-POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
+POST  http://127.0.0.1:8000/user/register/
 Content-Type: application/json
 
 {
-    "username":"youssef_st",
-    "email":"youssef449233@gmail.com",
+    "username":"youssef_admin",
+    "email":"youssef123@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
-    "last_name":"elh",
-    "user_type":"student",
+    "last_name":"hesham",
+    "user_type":"admin",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }
 
 ###
 
-POST   educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/2301/
+POST   http://127.0.0.1:8000/user/verify-email/8660/
 Content-Type: application/json
 
 
 
 ###
 
-POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
+POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 
 {
-    "username_or_email": "youssef",
+    "username_or_email": "youssef_admin",
     "password": "12345678y"
 }
+
+
+
+
+
+
+###
+
+POST   http://127.0.0.1:8000/admin-panel/courses/6/approve/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NTIxNjYyLCJpYXQiOjE3NTc1MTgwNjIsImp0aSI6IjdjOGU2YjgzYTk3MzQ3OWJhMGY1YmE4YzU3MmVjYmM3IiwidXNlcl9pZCI6IjM5In0.Uzuy9jw3WQSfkteyOwZhwyPR4YEUzYa42oR8F61DLtQ
 
 
 

@@ -91,8 +91,8 @@ class SupportTicket(models.Model):
             send_mail(
                 subject=subject,
                 message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.DEFAULT_FROM_EMAIL],  # Add admin email in settings
+                from_email=self.email,
+                recipient_list=[settings.ADMIN_EMAIL],  # Add admin email in settings
                 fail_silently=False,
             )
         except Exception as e:

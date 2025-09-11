@@ -30,7 +30,7 @@ Content-Type: application/json
 
 
 {
-    "username_or_email": "youssef_admin",
+    "username_or_email": "youssef_st",
     "password": "12345678y"
 }
 
@@ -41,17 +41,12 @@ Content-Type: application/json
 
 ###
 
-GET  http://127.0.0.1:8000/support/get/ticket/stats/
+POST  http://127.0.0.1:8000/support/contact/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NjA4NTE3LCJpYXQiOjE3NTc2MDQ5MTcsImp0aSI6IjdkZDgyYmFlYmNiMTQ4OWJhNWNjNzA4YzY4YjExNjI4IiwidXNlcl9pZCI6IjM5In0.PTDfQ_-76JSLk3pOTaTE1KLJZu0Ae-Kz4kdE8-b_qBQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NjE4NTUxLCJpYXQiOjE3NTc2MTQ5NTEsImp0aSI6Ijg1MTA1OTk3MjJiZTQyZmU4YmMwNDI5NmMwZjNmYjdlIiwidXNlcl9pZCI6IjEyIn0.wTn_ragbRRwjdiuowWLMuWaw17D-XKjvK0gtPj_GCxw
 
 
-{
-    "name": "Youssef Hesham",
-    "subject": "Issue with Course Enrollment",
-    "description": "I am unable to enroll in the course.",
-    "email": "youssef123@gmail.com"
-}
+
 
 ###
 

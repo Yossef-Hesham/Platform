@@ -92,9 +92,77 @@ class SupportTicket(models.Model):
                 subject=subject,
                 message=message,
                 from_email=self.email,
-                recipient_list=[settings.ADMIN_EMAIL],  # Add admin email in settings
+                recipient_list=[settings.DEFAULT_FROM_EMAIL],  # Add admin email in settings
                 fail_silently=False,
             )
         except Exception as e:
             # Log error but don't prevent ticket creation
             print(f"Failed to send email notification: {str(e)}")
+            
+
+
+# models.py
+import random
+from django.db import models
+from django.core.mail import send_mail
+from django.conf import settings
+
+class SupportMessage(models.Model):
+    # Auto-generated 4-digit ticket ID
+    ticket_id = models.CharField(max_length=4, unique=True, editable=False)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField(max_length=500)  # Increased from 200 to 500
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['created_at']
+    
+    def save(self, *args, **kwargs):
+        if not self.ticket_id:
+            # Generate unique 4-digit ticket ID
+            self.ticket_id = self.generate_ticket_id()
+            
+            # Send email notification to admin
+            self.send_admin_notification()
+        
+        super().save(*args, **kwargs)
+    
+    def generate_ticket_id(self):
+        """Generate a unique 4-digit ticket ID"""
+        while True:
+            ticket_id = str(random.randint(1000, 9999))
+            if not SupportMessage.objects.filter(ticket_id=ticket_id).exists():
+                return ticket_id
+    
+    def send_admin_notification(self):
+        """Send email notification to admin about new message"""
+        subject = f"New Support Message: Ticket #{self.ticket_id}"
+        
+        message = f"""
+        New support message received:
+        
+        Ticket ID: #{self.ticket_id}
+        From: {self.name}
+        Email: {self.email}
+        
+        Message:
+        {self.message}
+        
+        Please respond to this support request.
+        """
+        
+        try:
+            send_mail(
+                subject=subject,  # Added subject
+                message=message,
+                from_email=self.email,  # Use your email as sender
+                recipient_list=[settings.DEFAULT_FROM_EMAIL],  # Send to admin
+                fail_silently=False,
+            )
+        except Exception as e:
+            # Log error but don't prevent message creation
+            print(f"Failed to send email notification: {str(e)}")
+    
+    def __str__(self):
+        return f"Message from {self.name} - Ticket #{self.ticket_id}"

@@ -14,7 +14,7 @@ urlpatterns = [
     path('student/', include('student.urls')),
     path('parent/', include('parent.urls')),
     path('admin-panel/', include('Admin.urls')),
-    
+    path('support/', include('support.urls')),
 
     # for documenting api
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

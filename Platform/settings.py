@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'student',
     'parent',
     'Admin',
+    'support',
     'gateway',
     'rest_framework',
     'django_filters',

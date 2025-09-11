@@ -41,12 +41,17 @@ Content-Type: application/json
 
 ###
 
-POST   http://127.0.0.1:8000/admin-panel/courses/6/approve/
+GET  http://127.0.0.1:8000/support/get/ticket/stats/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NTIxNjYyLCJpYXQiOjE3NTc1MTgwNjIsImp0aSI6IjdjOGU2YjgzYTk3MzQ3OWJhMGY1YmE4YzU3MmVjYmM3IiwidXNlcl9pZCI6IjM5In0.Uzuy9jw3WQSfkteyOwZhwyPR4YEUzYa42oR8F61DLtQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NjA4NTE3LCJpYXQiOjE3NTc2MDQ5MTcsImp0aSI6IjdkZDgyYmFlYmNiMTQ4OWJhNWNjNzA4YzY4YjExNjI4IiwidXNlcl9pZCI6IjM5In0.PTDfQ_-76JSLk3pOTaTE1KLJZu0Ae-Kz4kdE8-b_qBQ
 
 
-
+{
+    "name": "Youssef Hesham",
+    "subject": "Issue with Course Enrollment",
+    "description": "I am unable to enroll in the course.",
+    "email": "youssef123@gmail.com"
+}
 
 ###
 

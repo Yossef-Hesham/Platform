@@ -1,38 +1,49 @@
 
 
 
-POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/register/
+POST  http://127.0.0.1:8000/user/register/
 Content-Type: application/json
 
 {
-    "username":"youssef_st",
-    "email":"youssef449233@gmail.com",
+    "username":"youssef_admin",
+    "email":"youssef123@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
-    "last_name":"elh",
-    "user_type":"student",
+    "last_name":"hesham",
+    "user_type":"admin",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }
 
 ###
 
-POST   educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/2301/
+POST   http://127.0.0.1:8000/user/verify-email/8660/
 Content-Type: application/json
 
 
 
 ###
 
-POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
+POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 
 {
-    "username_or_email": "joo",
+    "username_or_email": "youssef",
     "password": "12345678y"
 }
+
+
+
+
+
+
+###
+
+POST  http://127.0.0.1:8000/support/contact/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NjE4NTUxLCJpYXQiOjE3NTc2MTQ5NTEsImp0aSI6Ijg1MTA1OTk3MjJiZTQyZmU4YmMwNDI5NmMwZjNmYjdlIiwidXNlcl9pZCI6IjEyIn0.wTn_ragbRRwjdiuowWLMuWaw17D-XKjvK0gtPj_GCxw
 
 
 
@@ -54,17 +65,62 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 
+
+
+
+
+
+
+
+
 ###
 
-POST  http://educational-platform-git-s-dash-youssefs-projects-e2c35ebf.vercel.app/user/login/
+GET  http://127.0.0.1:8000/parent/children/12/sections-completion/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzY2NzI3LCJpYXQiOjE3NTczNjMxMjgsImp0aSI6ImFlNGRhOTUwMjdjZjRjZGNiNzliYWY1ZTRiNDMwYTg5IiwidXNlcl9pZCI6IjM0In0.OQvtOejq84ofKurfuN3mHg5XRUHcTckRDIUGMtdRC8Y
+
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GET  http://127.0.0.1:8000/user/profile/parent/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzYzMDczLCJpYXQiOjE3NTczNTk0NzMsImp0aSI6ImMzYzAwNDljNDIxZTQ2OWU4ZmM0Yjk1OGRmZWJjZDU4IiwidXNlcl9pZCI6IjM0In0.CZKrUB8LkGrYJ73cYHqFASsaBij8OJCvpTqlX207RJU
+
 
 {
-    "username_or_email": "youssef",
-    "password": "12345678y"
+    "child_username": "youssef_st"
 }
+
 ###
 
+POST  http://127.0.0.1:8000/user/login/
+Content-Type: application/json
+
+
+{
+    "username_or_email": "youssifh111",
+    "password": "22122002K"
+}
+
+
+###
 
 GET http://127.0.0.1:8000/teacher/enrollments/
 Content-Type: application/json

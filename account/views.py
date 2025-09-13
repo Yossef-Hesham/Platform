@@ -288,7 +288,7 @@ class StudentProfileView(RetrieveUpdateAPIView):
 
 
 class ParentProfileView(RetrieveUpdateAPIView):
-    """""
+    """
     Get and update parent profile
     """
     serializer_class = ParentProfileSerializer
@@ -301,7 +301,26 @@ class ParentProfileView(RetrieveUpdateAPIView):
         
         profile, created = ParentProfile.objects.get_or_create(user=user)
         return profile
-
+    
+    def retrieve(self, request, *args, **kwargs):
+        # Get the parent profile instance
+        instance = self.get_object()
+        
+        # Serialize the profile and get children data
+        profile_serializer = self.get_serializer(instance)
+        children = instance.get_children()
+        children_serializer = UserProfileSerializer(children, many=True)
+        
+        # Return combined response
+        return Response({
+            'profile': profile_serializer.data,
+            'children': children_serializer.data
+        })
+    
+    def update(self, request, *args, **kwargs):
+        # For update operations, we only work with the profile
+        # Children would typically be managed through separate endpoints
+        return super().update(request, *args, **kwargs)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

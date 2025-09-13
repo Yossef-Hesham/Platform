@@ -30,7 +30,7 @@ Content-Type: application/json
 
 
 {
-    "username_or_email": "youssef",
+    "username_or_email": "joo",
     "password": "12345678y"
 }
 
@@ -93,59 +93,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###
 
 
-GET  http://127.0.0.1:8000/teacher/quizzes/7/questions/
+GET  http://127.0.0.1:8000/user/profile/parent/
 Content-Type: application/json
-Authorization: Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MjgzMjgxLCJpYXQiOjE3NTcyNzk2ODEsImp0aSI6ImQ2ZmEzMTk2MGRmMzQ5MmE5YjM4NTJkMmRmM2JhZDY3IiwidXNlcl9pZCI6IjEwIn0.TiIeLfgtrRyU6rX2xgAc6JYXoZ8SqqPr4pwsBmO71EQ
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NzcwODAxLCJpYXQiOjE3NTc3NjcyMDEsImp0aSI6IjU1MWI1ZmVjMjYwMzQ4OGI5MTE2NTk4MzRlNWI1OWRlIiwidXNlcl9pZCI6IjM0In0.3CFuNjpvwTOv2Z-Xw6v8nDfi2G3zc6u6aKIeXBdT1tw
 
 
 
 
 ###
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 POST http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef_st",
-    "password": "12345678y"
+    "username_or_email": "youssifh111",
+    "password": "22122002K"
 }
 
-###
 
-GET http://127.0.0.1:8000//payments/
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2ODIzODY4LCJpYXQiOjE3NTY4MjM1NjksImp0aSI6IjU5MDc0NGIwNTBjMDRiMDU5NDNhZWIwM2ExOGI1NTc3IiwidXNlcl9pZCI6IjEyIn0.PT8F64vVPZ8MxMTG9LfMLSDzd5QwDgOQuOk67DyhBUw
+
 
 ###
 

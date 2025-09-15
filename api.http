@@ -83,22 +83,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 GET  http://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/profile/parent/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzYzMDczLCJpYXQiOjE3NTczNTk0NzMsImp0aSI6ImMzYzAwNDljNDIxZTQ2OWU4ZmM0Yjk1OGRmZWJjZDU4IiwidXNlcl9pZCI6IjM0In0.CZKrUB8LkGrYJ73cYHqFASsaBij8OJCvpTqlX207RJU
@@ -125,22 +109,29 @@ POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef",
+    "username_or_email": "youssef_st",
     "password": "12345678y"
 }
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+GET  http://127.0.0.1:8000/student/get-all-courses/
 Content-Type: application/json
 
+
+
+
+###
+
+
+GET  http://127.0.0.1:8000/teacher/courses/17/reviews/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3OTA0ODk3LCJpYXQiOjE3NTc5MDEyOTcsImp0aSI6ImUxMzI4MTYzZDAzYTQ4Yjc5NDg2ZDI3ZTEwZTcxNTJjIiwidXNlcl9pZCI6IjEyIn0.UUi-Xrn-j7fOfy10cwUJtPxEHe-VlVhcVcgHmCYt7ZE
+
 {
-    "username_or_email": "youssef_admin",
-    "password": "12345678y"
+    "rating": 5,
+    "comment": "Great course!"
 }
-
-
-
 ###
 
 
@@ -150,12 +141,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 
-
 ###
 
-GET http://127.0.0.1:8000/teacher/get_teachers/
+GET http://127.0.0.1:8000/teacher/courses/
 Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzQ4NzI5LCJpYXQiOjE3NTczNDUxMjksImp0aSI6ImQ4ODJlZDUwMmQyMjRmYzk4NGIxMzE5MjdmMGE3YTRhIiwidXNlcl9pZCI6IjEwIn0.JMZQ0jjoQMg1riAknAXRruf65VIgXISC-yjwoBdTUbY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3OTA0MDAwLCJpYXQiOjE3NTc5MDA0MDAsImp0aSI6IjQxZjA5ZWFjOGZkMDQzODg4OGNkZTRiMTlhNzI1MTIyIiwidXNlcl9pZCI6IjEwIn0.f08dQ7ZgxHdlwJvu_W7Y_tBSM1swJ8whO9kF5DhIee0
+
+
+
+
+
 
 
     

@@ -430,3 +430,14 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'full_name', 'email', 'date_joined', 'pic']
+
+
+from .models import Review
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user_name = serializers.ReadOnlyField(source='user.full_name')
+
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'user_name', 'rating', 'comment', 'created_at']
+        read_only_fields = ['user', 'created_at']

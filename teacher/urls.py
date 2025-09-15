@@ -37,7 +37,11 @@ urlpatterns = [
     path('quiz-results/', views.QuizResultsView.as_view(), name='quiz_results'),
     path('quiz-attempts/<int:attempt_id>/', views.QuizAttemptDetailView.as_view(), name='quiz_attempt_detail'),
 
+    # all teachers
     path('get_teachers/', views.TeacherListView.as_view(), name='get_all_teachers'),
+    
+    # Reviews
+    path('courses/<int:course_id>/reviews/', views.ReviewListCreateView.as_view(), name='course_reviews_list_create'),
 
     # Course Reviews
     path('reviews/', views.CourseReviewsView.as_view(), name='course_reviews'),

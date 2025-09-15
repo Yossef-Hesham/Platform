@@ -335,3 +335,26 @@ class CourseReview(models.Model):
     
     def __str__(self):
         return f"{self.student.full_name} rated {self.course.title} - {self.rating} stars"
+    
+
+
+from django.conf import settings
+class Review(models.Model):
+    course = models.ForeignKey(
+        Course,
+        related_name="course_reviews",
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    rating = models.IntegerField(default=1)  # مثلا من 1 لـ 5
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('course', 'user')  # مستخدم واحد يعمل review واحد بس للكورس
+
+    def __str__(self):
+        return f"{self.user} - {self.course} ({self.rating})"

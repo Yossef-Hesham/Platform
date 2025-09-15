@@ -34,6 +34,13 @@ class IsTeacher(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_teacher
 
+class IsStudent(permissions.BasePermission):
+    """
+    Custom permission to only allow students to access student dashboard
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.is_student
+
 
 class IsTeacherOwner(permissions.BasePermission):
     """
@@ -666,3 +673,24 @@ class TeacherListView(APIView):
         teachers = User.objects.filter(user_type='teacher')
         serializer = TeacherSerializer(teachers, many=True)
         return Response(serializer.data)
+    
+from .models import Review
+from .serializers import ReviewSerializer
+
+
+
+
+
+class ReviewListCreateView(generics.ListCreateAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsStudent]
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+        return Review.objects.filter(course_id=course_id)
+
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user,
+            course_id=self.kwargs['course_id']
+        )

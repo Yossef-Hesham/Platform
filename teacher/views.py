@@ -681,9 +681,9 @@ from .serializers import ReviewSerializer
 
 
 
+
 class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsStudent]
 
     def get_queryset(self):
         course_id = self.kwargs['course_id']
@@ -694,3 +694,8 @@ class ReviewListCreateView(generics.ListCreateAPIView):
             user=self.request.user,
             course_id=self.kwargs['course_id']
         )
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsStudent()]

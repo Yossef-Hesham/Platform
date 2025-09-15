@@ -99,7 +99,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 
-GET  http://127.0.0.1:8000/user/profile/parent/
+GET  http://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/profile/parent/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzYzMDczLCJpYXQiOjE3NTczNTk0NzMsImp0aSI6ImMzYzAwNDljNDIxZTQ2OWU4ZmM0Yjk1OGRmZWJjZDU4IiwidXNlcl9pZCI6IjM0In0.CZKrUB8LkGrYJ73cYHqFASsaBij8OJCvpTqlX207RJU
 
@@ -113,7 +113,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
-
 {
     "username_or_email": "youssifh111",
     "password": "22122002K"
@@ -122,12 +121,44 @@ Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/teacher/enrollments/
+POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzQ4NzI5LCJpYXQiOjE3NTczNDUxMjksImp0aSI6ImQ4ODJlZDUwMmQyMjRmYzk4NGIxMzE5MjdmMGE3YTRhIiwidXNlcl9pZCI6IjEwIn0.JMZQ0jjoQMg1riAknAXRruf65VIgXISC-yjwoBdTUbY
+
+{
+    "username_or_email": "youssef",
+    "password": "12345678y"
+}
+
+###
+
+POST  http://127.0.0.1:8000/user/login/
+Content-Type: application/json
+
+{
+    "username_or_email": "youssef_admin",
+    "password": "12345678y"
+}
 
 
 
+###
+
+
+POST  http://127.0.0.1:8000/admin-panel/approve-teacher/10/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3OTAxMzI0LCJpYXQiOjE3NTc4OTc3MjQsImp0aSI6IjFjYTJjYmUzNzYxNjRkYzY5MjEzZjNhZTdhMjYxOGFiIiwidXNlcl9pZCI6IjM5In0.PCLUnCPUFAHIzLzUsQenuysLXUymj81A5oTIniM2PaE
+
+
+
+
+###
+
+GET http://127.0.0.1:8000/teacher/get_teachers/
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MzQ4NzI5LCJpYXQiOjE3NTczNDUxMjksImp0aSI6ImQ4ODJlZDUwMmQyMjRmYzk4NGIxMzE5MjdmMGE3YTRhIiwidXNlcl9pZCI6IjEwIn0.JMZQ0jjoQMg1riAknAXRruf65VIgXISC-yjwoBdTUbY
+
+
+    
 ###
 
 
@@ -149,7 +180,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 ###
 
 
-GET  http://127.0.0.1:8000/user/profile/parent/
+GET  http://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/profile/parent/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3NzcwODAxLCJpYXQiOjE3NTc3NjcyMDEsImp0aSI6IjU1MWI1ZmVjMjYwMzQ4OGI5MTE2NTk4MzRlNWI1OWRlIiwidXNlcl9pZCI6IjM0In0.3CFuNjpvwTOv2Z-Xw6v8nDfi2G3zc6u6aKIeXBdT1tw
 

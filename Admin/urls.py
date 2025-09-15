@@ -1,6 +1,7 @@
 # urls.py
 from django.urls import path
 from . import views
+from account.views import approve_teacher
 
 urlpatterns = [
     # Dashboard endpoints
@@ -17,6 +18,9 @@ urlpatterns = [
     path('courses/', views.AdminCourseListView.as_view(), name='admin-courses-list'),
     path('courses/<int:pk>/', views.AdminCourseDetailView.as_view(), name='admin-course-detail'),
     path('courses/<int:course_id>/approve/', views.AdminCourseApproveView.as_view(), name='admin-course-approve'),
+    
+    path('approve-teacher/<int:teacher_id>/', approve_teacher, name='approve_teacher'),
+    
     
     # Add more endpoints as needed...
 ]

@@ -654,3 +654,15 @@ def remove_student_from_course(request, course_id, student_id):
     return Response({
         'message': 'Student removed from course successfully'
     })
+    
+    
+from rest_framework.permissions import AllowAny
+from .serializers import TeacherSerializer
+
+class TeacherListView(APIView):
+    # permission_classes = [IsAuthenticated]  # only logged-in users can see
+
+    def get(self, request):
+        teachers = User.objects.filter(user_type='teacher')
+        serializer = TeacherSerializer(teachers, many=True)
+        return Response(serializer.data)

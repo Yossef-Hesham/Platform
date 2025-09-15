@@ -28,9 +28,7 @@ urlpatterns = [
     path('password-reset/request/', views.password_reset_request, name='password_reset_request'),
     path('password-reset/confirm/<str:token>/', views.password_reset_confirm, name='password_reset_confirm'),
     
-    # Admin functions
-    path('approve-teacher/<int:teacher_id>/', views.approve_teacher, name='approve_teacher'),
-    
+   
     # Parent-child linking
     path('link-child/', views.link_child_to_parent, name='link_child'),
 ]

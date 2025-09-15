@@ -422,3 +422,11 @@ class BulkEnrollmentSerializer(serializers.Serializer):
             )
         
         return valid_emails
+    
+
+class TeacherSerializer(serializers.ModelSerializer):
+    pic = serializers.ImageField(source='profile_picture', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'full_name', 'email', 'date_joined', 'pic']

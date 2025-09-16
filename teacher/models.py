@@ -59,6 +59,8 @@ class Course(models.Model):
         self.save(update_fields=['total_sections', 'total_quizzes', 'total_enrollments'])
 
 
+from cloudinary.models import CloudinaryField
+
 class Section(models.Model):
     """
     Section model for course content
@@ -75,8 +77,8 @@ class Section(models.Model):
     description = models.TextField(blank=True)
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES, default='text')
     content = models.TextField(blank=True)  # For text content
-    video_file = models.FileField(upload_to='section_videos/', blank=True, null=True)
-    pdf_file = models.FileField(upload_to='section_pdfs/', blank=True, null=True)
+    video_file = CloudinaryField('video', blank=True, null=True)
+    pdf_file = CloudinaryField('pdf', blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     duration_minutes = models.PositiveIntegerField(default=0)
     

@@ -77,7 +77,19 @@ class Section(models.Model):
     description = models.TextField(blank=True)
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES, default='text')
     content = models.TextField(blank=True)  # For text content
-    video_file = CloudinaryField('video', blank=True, null=True)
+    
+    video_file = CloudinaryField(
+        resource_type='video',
+        blank=True,
+        null=True,
+        folder='courses/videos/',
+        use_filename=True,
+        transformation=[
+            {'quality': 'auto'},
+            {'format': 'mp4'},  # Convert to MP4 for compatibility
+        ]
+    )
+    
     pdf_file = CloudinaryField('pdf', blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
     duration_minutes = models.PositiveIntegerField(default=0)

@@ -702,7 +702,46 @@ class ReviewListCreateView(generics.ListCreateAPIView):
 
 from .serializers import Section_IscompleteSerializer
 
-class SectionIsComplete(generics.UpdateAPIView):
-    queryset = SectionView.objects.all()
-    serializer_class = Section_IscompleteSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
+class SectionIsComplete(APIView):
+    """
+    API endpoint to mark a section as completed by a student
+    """
     permission_classes = [IsStudent]
+
+    def patch(self, request, section_id):
+        try:
+            # Get the section
+            section = get_object_or_404(Section, id=section_id)
+            
+            # Get or create SectionView for this student and section
+            section_view, created = SectionView.objects.get_or_create(
+                student=request.user,
+                section=section,
+                defaults={'is_completed': True}
+            )
+            
+            # If it already exists, update the completion status
+            if not created:
+                section_view.is_completed = True
+                section_view.save()
+            
+            # Serialize the response
+            serializer = Section_IscompleteSerializer(section_view)
+            
+            return Response({
+                'status': 'success',
+                'message': 'Section marked as completed',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

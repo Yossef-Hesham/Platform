@@ -18,8 +18,12 @@ Content-Type: application/json
 
 ###
 
-POST   http://127.0.0.1:8000/user/verify-email/8660/
+PATCH  http://127.0.0.1:8000/student/sections/59/complete/
 Content-Type: application/json
+
+{
+    "is_complete": false
+}
 
 
 

@@ -16,6 +16,19 @@ load_dotenv()
 import os
 from decouple import config
 
+
+
+# cloudinary impots
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -81,6 +94,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'storages',
     'django_extensions',
+    'cloudinary',
 ]
 
 REST_FRAMEWORK = {
@@ -224,4 +238,9 @@ EMAIL_HOST_PASSWORD = os.getenv('FROM_EMAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL') # Add this line
 
 
-# FRONTEND_URL=
+# cloud storage settings
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
+)

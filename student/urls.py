@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from teacher.views import SectionIsComplete
 app_name = 'student'
 
 urlpatterns = [
@@ -30,7 +30,9 @@ urlpatterns = [
     # i should test these two paths on postman
     path('sections/<int:section_id>/download-pdf/', views.SectionPDFDownloadView.as_view(), name='download_section_pdf'),
     path('courses/<int:course_id>/pdfs/', views.CourseAllPDFsDownloadView.as_view(), name='course_pdfs_list'),
-    
-    
-    
+
+    # Section Completion
+    path('sections/<int:section_id>/complete/', SectionIsComplete.as_view(), name='section_is_complete'),
+
+
 ]

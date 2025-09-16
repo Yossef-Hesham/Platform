@@ -705,3 +705,4 @@ from .serializers import Section_IscompleteSerializer
 class SectionIsComplete(generics.UpdateAPIView):
     queryset = SectionView.objects.all()
     serializer_class = Section_IscompleteSerializer
+    permission_classes = [IsStudent]

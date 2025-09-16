@@ -43,9 +43,7 @@ urlpatterns = [
     # Reviews
     path('courses/<int:course_id>/reviews/', views.ReviewListCreateView.as_view(), name='course_reviews_list_create'),
 
-    # update section is_complete
-    path('sections/<int:pk>/complete/', views.SectionIsComplete.as_view(), name='section_is_complete'),
-
+   
     # Course Reviews
     path('reviews/', views.CourseReviewsView.as_view(), name='course_reviews'),
 ]

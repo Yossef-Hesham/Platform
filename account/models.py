@@ -33,7 +33,7 @@ class User(AbstractUser):
         null=True
     )
     
-    profile_picture = CloudinaryField('profile_picture', blank=True, null=True)
+    profile_picture = CloudinaryField('profile_picture', blank=True, null=True, folder='accounts/pictures/')
     
     date_of_birth = models.DateField(blank=False, null=True)
     bio = models.TextField(max_length=500, blank=True)

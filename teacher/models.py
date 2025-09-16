@@ -89,8 +89,8 @@ class Section(models.Model):
             {'format': 'mp4'},  # Convert to MP4 for compatibility
         ]
     )
-    
-    pdf_file = CloudinaryField('pdf', blank=True, null=True)
+
+    pdf_file = CloudinaryField('pdf', blank=True, null=True, folder='courses/pdfs/')
     order = models.PositiveIntegerField(default=0)
     duration_minutes = models.PositiveIntegerField(default=0)
     

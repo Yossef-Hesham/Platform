@@ -441,3 +441,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'user', 'user_name', 'rating', 'comment', 'created_at']
         read_only_fields = ['user', 'created_at']
+        
+class Section_IscompleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SectionView
+        fields = ['is_completed']

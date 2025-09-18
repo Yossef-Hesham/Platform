@@ -18,11 +18,12 @@ Content-Type: application/json
 
 ###
 
-PATCH  http://127.0.0.1:8000/student/sections/59/complete/
+PATCH  http://127.0.0.1:8000/student/sections/22/complete/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4MjI2NzE5LCJpYXQiOjE3NTgyMjMxMTksImp0aSI6IjZiM2M3MzljNDg2MjRhYjFiZTI4MGU1ZDUyNjM4YTU0IiwidXNlcl9pZCI6IjEyIn0.5ZMCtLcM-XakRmRpE41ctkQtaMyJxBjHHvMzCrxYwdo
 
 {
-    "is_complete": false
+    "is_completed": true
 }
 
 
@@ -34,7 +35,7 @@ Content-Type: application/json
 
 
 {
-    "username_or_email": "youssef_st",
+    "username_or_email": "jooo",
     "password": "12345678y"
 }
 

@@ -745,3 +745,43 @@ class SectionIsComplete(APIView):
                 'status': 'error',
                 'message': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+
+    # def get(self, request, section_id):
+    #     try:
+    #         # Get the section
+    #         section = get_object_or_404(Section, id=section_id)
+            
+    #         # Get or create SectionView for this student and section
+    #         section_view_completed = SectionView.objects.filter(
+    #             student=request.user,
+    #             section=section,
+    #             is_completed=True
+    #         ).count()
+            
+    #         section_view_all = SectionView.objects.filter(
+    #             student=request.user,
+    #             section=section
+    #         ).count()
+            
+    #         # Serialize the response
+            
+    #         return Response({
+    #             'status': 'success',
+    #             'section': section_view_completed,
+    #             'section_view_all': section_view_all,
+    #             'progress_percentage': section_view_completed * 100 / section_view_all if section_view_all > 0 else 0,
+    #         }, status=status.HTTP_200_OK)
+            
+    #     except Exception as e:
+    #         return Response({
+    #             'status': 'error',
+    #             'message': str(e)
+    #         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SecionIscompleteView(generics.UpdateAPIView):
+    queryset = SectionView.objects.all()
+    serializer_class = Section_IscompleteSerializer
+    permission_classes = [IsStudent]
+
+   

@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from account.models import User
+from cloudinary.models import CloudinaryField
 
 
 class Course(models.Model):
@@ -30,7 +31,7 @@ class Course(models.Model):
         limit_choices_to={'user_type': 'teacher'},
         related_name='courses'
     )
-    thumbnail = models.ImageField(upload_to='course_thumbnails/', blank=True, null=True)
+    thumbnail = CloudinaryField('thumbnail', blank=True, null=True, folder='courses/thumbnails/')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, default='beginner')
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -58,8 +59,6 @@ class Course(models.Model):
         self.total_enrollments = self.enrollments.filter(is_active=True).count()
         self.save(update_fields=['total_sections', 'total_quizzes', 'total_enrollments'])
 
-
-from cloudinary.models import CloudinaryField
 
 class Section(models.Model):
     """

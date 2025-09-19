@@ -364,11 +364,17 @@ class TeacherDashboardAnalyticsView(APIView):
         })
 
 
+
+class IsTeacherOrStudent(permissions.BasePermission):
+    """Allow access to both teachers and students"""
+    def has_permission(self, request, view):
+        return request.user.user_type in ['teacher', 'student']
+
 class CourseAnalyticsView(APIView):
     """
     Get detailed analytics for a specific course
     """
-    permission_classes = [IsTeacher, IsStudent]
+    permission_classes = [IsTeacherOrStudent]
     
     def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id, teacher=request.user)

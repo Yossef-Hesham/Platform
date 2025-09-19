@@ -69,6 +69,8 @@ def update_enrollment_progress(sender, instance, created, **kwargs):
             enrollment.update_progress()
         except Enrollment.DoesNotExist:
             pass
+        
+    
 
 
 @receiver(post_save, sender=SectionView)

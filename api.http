@@ -30,17 +30,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+GET https://igateway.iti.gov.eg/OldApi/Applicant/GetApplicantDetails?intakeId=4d854c93-3ac7-411b-5cf6-08ddad7f3080
 Content-Type: application/json
-
-
-{
-    "username_or_email": "jooo",
-    "password": "12345678y"
-}
-
-
-
 
 
 

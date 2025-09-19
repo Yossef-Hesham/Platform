@@ -675,7 +675,7 @@ class TeacherListView(APIView):
         return Response(serializer.data)
     
 from .models import Review
-from .serializers import ReviewSerializer
+from .serializers import ReviewSerializer, Section_IscompleteSerializer
 
 
 
@@ -700,38 +700,26 @@ class ReviewListCreateView(generics.ListCreateAPIView):
             return [AllowAny()]
         return [IsStudent()]
 
-from .serializers import Section_IscompleteSerializer
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
+
 
 class SectionIsComplete(APIView):
-    """
-    API endpoint to mark a section as completed by a student
-    """
     permission_classes = [IsStudent]
-
+    
     def patch(self, request, section_id):
         try:
-            # Get the section
             section = get_object_or_404(Section, id=section_id)
             
-            # Get or create SectionView for this student and section
+            # Get or create section view
             section_view, created = SectionView.objects.get_or_create(
                 student=request.user,
-                section=section,
-                defaults={'is_completed': True}
+                section=section
             )
             
-            # If it already exists, update the completion status
-            if not created:
-                section_view.is_completed = True
-                section_view.save()
+            # Always set is_completed to True and save with update_fields
+            section_view.is_completed = True
+            section_view.save(update_fields=['is_completed'])
             
-            # Serialize the response
             serializer = Section_IscompleteSerializer(section_view)
             
             return Response({
@@ -739,49 +727,9 @@ class SectionIsComplete(APIView):
                 'message': 'Section marked as completed',
                 'data': serializer.data
             }, status=status.HTTP_200_OK)
-            
+
         except Exception as e:
             return Response({
                 'status': 'error',
                 'message': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
-
-    # def get(self, request, section_id):
-    #     try:
-    #         # Get the section
-    #         section = get_object_or_404(Section, id=section_id)
-            
-    #         # Get or create SectionView for this student and section
-    #         section_view_completed = SectionView.objects.filter(
-    #             student=request.user,
-    #             section=section,
-    #             is_completed=True
-    #         ).count()
-            
-    #         section_view_all = SectionView.objects.filter(
-    #             student=request.user,
-    #             section=section
-    #         ).count()
-            
-    #         # Serialize the response
-            
-    #         return Response({
-    #             'status': 'success',
-    #             'section': section_view_completed,
-    #             'section_view_all': section_view_all,
-    #             'progress_percentage': section_view_completed * 100 / section_view_all if section_view_all > 0 else 0,
-    #         }, status=status.HTTP_200_OK)
-            
-    #     except Exception as e:
-    #         return Response({
-    #             'status': 'error',
-    #             'message': str(e)
-    #         }, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SecionIscompleteView(generics.UpdateAPIView):
-    queryset = SectionView.objects.all()
-    serializer_class = Section_IscompleteSerializer
-    permission_classes = [IsStudent]
-
-   

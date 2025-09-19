@@ -185,6 +185,7 @@ class Choice(models.Model):
     def __str__(self):
         return f"{self.choice_text} ({'Correct' if self.is_correct else 'Incorrect'})"
 
+from django.db.models import Sum
 
 class Enrollment(models.Model):
     """
@@ -215,23 +216,41 @@ class Enrollment(models.Model):
         return f"{self.student.full_name} enrolled in {self.course.title}"
     
     def update_progress(self):
-        """Update student progress in the course"""
+        """Recalculate and update progress metrics"""
+        # Count completed sections in this course
+        completed_sections = SectionView.objects.filter(
+            student=self.student,
+            section__course=self.course,
+            is_completed=True
+        ).count()
+        
         total_sections = self.course.sections.count()
+        
+        # Calculate progress percentage
         if total_sections > 0:
-            completed_sections = SectionView.objects.filter(
-                student=self.student,
-                section__course=self.course,
-                is_completed=True
-            ).count()
-            
-            self.sections_completed = completed_sections
-            self.progress_percentage = (completed_sections / total_sections) * 100
-            
-            if self.progress_percentage >= 100 and not self.completion_date:
-                self.completion_date = timezone.now()
-            
-            self.save(update_fields=['sections_completed', 'progress_percentage', 'completion_date'])
-
+            progress_percentage = (completed_sections / total_sections) * 100
+        else:
+            progress_percentage = 0
+        
+        # Count passed quizzes (distinct quizzes passed)
+        passed_quizzes = QuizAttempt.objects.filter(
+            student=self.student,
+            quiz__section__course=self.course,
+            is_passed=True
+        ).values('quiz').distinct().count()
+        
+        # Calculate total time spent
+        total_time = SectionView.objects.filter(
+            student=self.student,
+            section__course=self.course
+        ).aggregate(total_time=Sum('total_time_spent_minutes'))['total_time'] or 0
+        
+        # Update fields
+        self.sections_completed = completed_sections
+        self.progress_percentage = progress_percentage
+        self.quizzes_passed = passed_quizzes
+        self.total_time_spent_minutes = total_time
+        self.save()
 
 class SectionView(models.Model):
     """

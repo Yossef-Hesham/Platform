@@ -369,16 +369,34 @@ class IsTeacherOrStudent(permissions.BasePermission):
     """Allow access to both teachers and students"""
     def has_permission(self, request, view):
         return request.user.user_type in ['teacher', 'student']
-
+    
+    
+from django.db.models import Max
 class CourseAnalyticsView(APIView):
     """
     Get detailed analytics for a specific course
+    For Teachers: Full course analytics
+    For Students: Personal progress and course overview
     """
     permission_classes = [IsTeacherOrStudent]
     
     def get(self, request, course_id):
-        course = get_object_or_404(Course, id=course_id, teacher=request.user)
+        # Get the course - different permission checks for teacher vs student
+        if request.user.user_type == 'teacher':
+            course = get_object_or_404(Course, id=course_id, teacher=request.user)
+        else:  # student
+            course = get_object_or_404(Course, id=course_id)
+            # Check if student is enrolled
+            if not course.enrollments.filter(student=request.user, is_active=True).exists():
+                return Response({'error': 'You are not enrolled in this course'}, status=403)
         
+        if request.user.user_type == 'teacher':
+            return self.get_teacher_analytics(request, course)
+        else:
+            return self.get_student_analytics(request, course)
+    
+    def get_teacher_analytics(self, request, course):
+        """Teacher-specific analytics"""
         # Basic course statistics
         total_enrollments = course.enrollments.filter(is_active=True).count()
         completed_enrollments = course.enrollments.filter(
@@ -404,16 +422,15 @@ class CourseAnalyticsView(APIView):
         for section in course.sections.all():
             views_count = section.views.count()
             unique_viewers = section.views.values('student').distinct().count()
-            completion_rate = section.views.filter(is_completed=True).count()
-            section_iscomplete =  SectionView.objects.filter(section=section, is_completed=True, student=request.user).exists()
+            completion_count = section.views.filter(is_completed=True).count()
             
             section_views.append({
                 'section_id': section.id,
                 'section_title': section.title,
-                'is_completed': section_iscomplete,
                 'total_views': views_count,
                 'unique_viewers': unique_viewers,
-                'completion_rate': (completion_rate / views_count * 100) if views_count > 0 else 0
+                'completion_count': completion_count,
+                'completion_rate': (completion_count / views_count * 100) if views_count > 0 else 0
             })
         
         # Quiz performance
@@ -452,6 +469,7 @@ class CourseAnalyticsView(APIView):
         enrollment_timeline.reverse()
         
         return Response({
+            'user_type': 'teacher',
             'course_info': {
                 'id': course.id,
                 'title': course.title,
@@ -470,6 +488,141 @@ class CourseAnalyticsView(APIView):
             'quiz_performance': quiz_performance,
             'enrollment_timeline': enrollment_timeline
         })
+    
+    def get_student_analytics(self, request, course):
+        """Student-specific progress data"""
+        enrollment = get_object_or_404(
+            Enrollment, 
+            student=request.user, 
+            course=course, 
+            is_active=True
+        )
+        
+        # Student's personal progress
+        completed_sections = SectionView.objects.filter(
+            student=request.user,
+            section__course=course,
+            is_completed=True
+        ).count()
+        
+        total_sections = course.sections.count()
+        
+        # Student's quiz performance
+        student_quiz_performance = []
+        for section in course.sections.all():
+            if hasattr(section, 'quiz'):
+                quiz = section.quiz
+                student_attempts = quiz.attempts.filter(
+                    student=request.user,
+                    is_completed=True
+                ).order_by('-started_at')
+                
+                latest_attempt = student_attempts.first()
+                
+                student_quiz_performance.append({
+                    'quiz_id': quiz.id,
+                    'quiz_title': quiz.title,
+                    'section_title': section.title,
+                    'attempts_count': student_attempts.count(),
+                    'best_score': student_attempts.aggregate(max=Max('score'))['max'] if student_attempts.exists() else None,
+                    'latest_score': latest_attempt.score if latest_attempt else None,
+                    'is_passed': latest_attempt.is_passed if latest_attempt else False,
+                    'last_attempt': latest_attempt.started_at if latest_attempt else None
+                })
+        
+        # Student's section completion status
+        section_progress = []
+        for section in course.sections.all():
+            section_view = SectionView.objects.filter(
+                student=request.user,
+                section=section
+            ).first()
+            
+            section_progress.append({
+                'section_id': section.id,
+                'section_title': section.title,
+                'is_completed': section_view.is_completed if section_view else False,
+                'first_viewed': section_view.first_viewed_at if section_view else None,
+                'last_viewed': section_view.last_viewed_at if section_view else None,
+                'time_spent_minutes': section_view.total_time_spent_minutes if section_view else 0,
+                'order': section.order  # Assuming sections have order field
+            })
+        
+        # Sort sections by order
+        section_progress.sort(key=lambda x: x['order'])
+        
+        # Time spent calculations
+        total_time_spent = SectionView.objects.filter(
+            student=request.user,
+            section__course=course
+        ).aggregate(total=Sum('total_time_spent_minutes'))['total'] or 0
+        
+        # Estimated time to complete
+        if enrollment.progress_percentage > 0:
+            estimated_total_time = (total_time_spent / enrollment.progress_percentage) * 100
+            time_remaining = estimated_total_time - total_time_spent
+        else:
+            time_remaining = None
+        
+        return Response({
+            'user_type': 'student',
+            'course_info': {
+                'id': course.id,
+                'title': course.title,
+                'teacher_name': course.teacher.full_name,
+                'start_date': enrollment.enrolled_at
+            },
+            'progress_overview': {
+                'progress_percentage': round(enrollment.progress_percentage, 1),
+                'sections_completed': enrollment.sections_completed,
+                'total_sections': total_sections,
+                'quizzes_passed': enrollment.quizzes_passed,
+                'total_time_spent_minutes': total_time_spent,
+                'estimated_time_remaining_minutes': round(time_remaining) if time_remaining else None,
+                'enrollment_date': enrollment.enrolled_at,
+                'completion_date': enrollment.completion_date
+            },
+            'section_progress': section_progress,
+            'quiz_performance': student_quiz_performance,
+            'recent_activity': self.get_recent_activity(request.user, course)
+        })
+    
+    def get_recent_activity(self, student, course):
+        """Get student's recent activity in the course"""
+        section_views = SectionView.objects.filter(
+            student=student,
+            section__course=course
+        ).order_by('-last_viewed_at')[:10]
+        
+        quiz_attempts = QuizAttempt.objects.filter(
+            student=student,
+            quiz__section__course=course,
+            is_completed=True
+        ).order_by('-started_at')[:10]
+        
+        # Combine and sort activities
+        activities = []
+        for view in section_views:
+            activities.append({
+                'type': 'section_view',
+                'title': view.section.title,
+                'time': view.last_viewed_at,
+                'action': 'Viewed section',
+                'completed': view.is_completed
+            })
+        
+        for attempt in quiz_attempts:
+            activities.append({
+                'type': 'quiz_attempt',
+                'title': attempt.quiz.title,
+                'time': attempt.started_at,
+                'action': f'Quiz attempt: {attempt.score}%',
+                'passed': attempt.is_passed
+            })
+        
+        # Sort by time and return latest 10
+        activities.sort(key=lambda x: x['time'], reverse=True)
+        return activities[:10]
 
 
 class StudentProgressView(APIView):

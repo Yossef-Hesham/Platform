@@ -368,7 +368,7 @@ class CourseAnalyticsView(APIView):
     """
     Get detailed analytics for a specific course
     """
-    permission_classes = [IsTeacher]
+    permission_classes = [IsTeacher, IsStudent]
     
     def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id, teacher=request.user)
@@ -399,10 +399,12 @@ class CourseAnalyticsView(APIView):
             views_count = section.views.count()
             unique_viewers = section.views.values('student').distinct().count()
             completion_rate = section.views.filter(is_completed=True).count()
+            section_iscomplete =  SectionView.objects.filter(section=section, is_completed=True, student=request.user).exists()
             
             section_views.append({
                 'section_id': section.id,
                 'section_title': section.title,
+                'is_completed': section_iscomplete,
                 'total_views': views_count,
                 'unique_viewers': unique_viewers,
                 'completion_rate': (completion_rate / views_count * 100) if views_count > 0 else 0

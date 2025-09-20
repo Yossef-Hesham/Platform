@@ -956,3 +956,5 @@ class TeacherSendNotificationView(generics.CreateAPIView):
             'message': f'Notification sent to {recipients.count()} students',
             'notification_id': notification.id
         }, status=status.HTTP_201_CREATED)
+        
+        

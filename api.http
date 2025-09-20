@@ -105,21 +105,22 @@ POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef_st",
+    "username_or_email": "youssef",
     "password": "12345678y"
 }
 
 ###
 
-PATCH  http://127.0.0.1:8000/student/notifications/1/read/
+POST  http://127.0.0.1:8000/teacher/notifications/send/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDA2OTg4LCJpYXQiOjE3NTg0MDMzODgsImp0aSI6IjFkYjMyNzdmY2QzNjQwZDFhZmI3MDY4NzU2MmM2NzhkIiwidXNlcl9pZCI6IjEyIn0.brkhLuIufHPCOWzRuBEmTjsmDkqwLaJoCPRH3xYeH2A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDA4MjQ0LCJpYXQiOjE3NTg0MDQ2NDQsImp0aSI6IjdiNmJjYzc5N2NjYTQzZmY4ZTBhZTQ4YWFkZjEwMzA3IiwidXNlcl9pZCI6IjEwIn0.5HjdpuHQKi53zmVo--86eKrV9t-HPJUnk-O9E6RDvL0
 
 {
-    "is_read": true
+  "title": "New Lecture Material Added",
+  "message": "I've uploaded new lecture slides for this week",
+  "course": 7,
+  "notification_type": "teacher_course"
 }
-
-
 
 ###
 

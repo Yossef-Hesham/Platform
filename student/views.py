@@ -1445,3 +1445,67 @@ class CourseAllPDFsDownloadView(APIView):
             'pdf_files': pdf_files
         })
 
+# views.py
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated
+from teacher.models import Notification
+from teacher.serializers import NotificationSerializer
+from account.permissions import IsStudent
+
+
+class StudentNotificationsView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsStudent]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at', 'is_read']
+    ordering = ['-created_at']
+    
+    def get_queryset(self):
+        return Notification.objects.filter(
+            recipients=self.request.user
+        ).select_related('sender', 'course')
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Always return 200 with empty array if no notifications
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                'notifications': serializer.data,
+                'unread_count': queryset.filter(is_read=False).count(),
+                'total_count': queryset.count()
+            })
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'notifications': serializer.data,
+            'unread_count': queryset.filter(is_read=False).count(),
+            'total_count': queryset.count()
+        })
+class MarkNotificationAsReadView(generics.UpdateAPIView):
+    permission_classes = [IsStudent]
+    
+    def update(self, request, *args, **kwargs):
+        notification = generics.get_object_or_404(
+            Notification, 
+            id=kwargs['pk'], 
+            recipients=request.user
+        )
+        
+        
+        if notification.is_read:
+            return Response({
+                'message': 'Notification already marked as read'
+            })
+        
+        notification.is_read = True
+        notification.save()
+        
+        
+        
+        return Response({
+            'status': 'success',
+            'message': 'Notification marked as read'
+        })

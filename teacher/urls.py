@@ -46,4 +46,9 @@ urlpatterns = [
    
     # Course Reviews
     path('reviews/', views.CourseReviewsView.as_view(), name='course_reviews'),
+    
+    
+    
+     path('teacher/notifications/send/', views.TeacherSendNotificationView.as_view(), name='teacher-send-notification'),
+     
 ]

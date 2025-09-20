@@ -100,7 +100,7 @@ Content-Type: application/json
 
 
 ###
-
+# 12
 POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
@@ -111,9 +111,13 @@ Content-Type: application/json
 
 ###
 
-GET  http://127.0.0.1:8000/student/get-all-courses/
+PATCH  http://127.0.0.1:8000/student/notifications/1/read/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDA2OTg4LCJpYXQiOjE3NTg0MDMzODgsImp0aSI6IjFkYjMyNzdmY2QzNjQwZDFhZmI3MDY4NzU2MmM2NzhkIiwidXNlcl9pZCI6IjEyIn0.brkhLuIufHPCOWzRuBEmTjsmDkqwLaJoCPRH3xYeH2A
 
+{
+    "is_read": true
+}
 
 
 

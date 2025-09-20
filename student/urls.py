@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from teacher.views import SectionIsComplete
+
 app_name = 'student'
 
 urlpatterns = [
@@ -33,6 +34,9 @@ urlpatterns = [
 
     # Section Completion
     path('sections/<int:section_id>/complete/', SectionIsComplete.as_view(), name='section_is_complete'),
-
+    
+    
+    path('get/notifications/', views.StudentNotificationsView.as_view(), name='student-notifications'),
+    path('notifications/<int:pk>/read/', views.MarkNotificationAsReadView.as_view(), name='mark-notification-read'),
 
 ]

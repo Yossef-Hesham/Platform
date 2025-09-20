@@ -390,3 +390,30 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.course} ({self.rating})"
+    
+# models.py
+class Notification(models.Model):
+    TEACHER_TO_STUDENTS = 'teacher_students'
+    TEACHER_TO_COURSE = 'teacher_course'
+    SYSTEM = 'system'
+    
+    NOTIFICATION_TYPES = [
+        (TEACHER_TO_STUDENTS, 'Teacher to specific students'),
+        (TEACHER_TO_COURSE, 'Teacher to entire course'),
+        (SYSTEM, 'System notification'),
+    ]
+    
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    recipients = models.ManyToManyField(User, related_name='received_notifications')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} - {self.sender.full_name}"

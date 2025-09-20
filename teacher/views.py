@@ -894,3 +894,65 @@ class SectionIsComplete(APIView):
                 'status': 'error',
                 'message': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+          
+
+from account.permissions import IsTeacher, IsStudent
+# views.py
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Notification, Course
+from .serializers import NotificationCreateSerializer
+
+class TeacherSendNotificationView(generics.CreateAPIView):
+    serializer_class = NotificationCreateSerializer
+    permission_classes = [IsTeacher]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        data = serializer.validated_data
+        teacher = request.user
+        
+        # Determine recipients
+        if 'student_ids' in data:
+            # Send to specific students
+            recipients = User.objects.filter(
+                id__in=data['student_ids'],
+                user_type='student'
+            )
+            notification_type = Notification.TEACHER_TO_STUDENTS
+        elif 'course' in data:
+            # Send to all students in course (verify teacher owns the course)
+            course = data['course']
+            if course.teacher != teacher:
+                return Response(
+                    {'error': 'You can only send notifications to your own courses'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            recipients = course.enrollments.filter(is_active=True).values_list('student', flat=True)
+            notification_type = Notification.TEACHER_TO_COURSE
+        else:
+            return Response(
+                {'error': 'Must specify either student_ids or course'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Create notification
+        notification = Notification.objects.create(
+            sender=teacher,
+            title=data['title'],
+            message=data['message'],
+            course=data.get('course'),
+            notification_type=notification_type
+        )
+        
+        # Add recipients
+        notification.recipients.set(recipients)
+        
+        return Response({
+            'status': 'success',
+            'message': f'Notification sent to {recipients.count()} students',
+            'notification_id': notification.id
+        }, status=status.HTTP_201_CREATED)

@@ -446,3 +446,37 @@ class Section_IscompleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SectionView
         fields = ['is_completed']
+        
+
+# serializers.py
+from rest_framework import serializers
+from .models import Notification
+
+class NotificationCreateSerializer(serializers.ModelSerializer):
+    student_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False
+    )
+    
+    class Meta:
+        model = Notification
+        fields = ['title', 'message', 'student_ids', 'course', 'notification_type']
+        extra_kwargs = {
+            'course': {'required': False},
+            'notification_type': {'required': False}
+        }
+    
+    def validate(self, attrs):
+        if 'student_ids' in attrs and attrs.get('course'):
+            raise serializers.ValidationError("Cannot specify both student_ids and course")
+        return attrs
+
+class NotificationSerializer(serializers.ModelSerializer):
+    sender_name = serializers.CharField(source='sender.full_name', read_only=True)
+    course_title = serializers.CharField(source='course.title', read_only=True, allow_null=True)
+    
+    class Meta:
+        model = Notification
+        fields = ['id', 'sender_name', 'course_title', 'title', 'message', 
+                 'notification_type', 'is_read', 'created_at']

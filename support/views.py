@@ -82,7 +82,7 @@ class SupportMessageListView(generics.ListAPIView):
     def get_queryset(self):
         return SupportMessage.objects.all()
 
-class SupportMessageDetailView(generics.RetrieveAPIView):
+class SupportMessageDetailView(generics.RetrieveDestroyAPIView):
     """Retrieve a support message (admin only)"""
     permission_classes = [IsAdminUser]
     queryset = SupportMessage.objects.all()

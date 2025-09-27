@@ -949,11 +949,11 @@ class CertificateDownloadView(APIView):
                 )
             
             # Check if file exists
-            if not os.path.exists(certificate.certificate_file.path):
-                return Response(
-                    {'error': 'Certificate file not found on server'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+            # if not os.path.exists(certificate.certificate_file.path):
+            #     return Response(
+            #         {'error': 'Certificate file not found on server'},
+            #         status=status.HTTP_404_NOT_FOUND
+            #     )
             
             # Read file content
             with open(certificate.certificate_file.path, 'rb') as f:

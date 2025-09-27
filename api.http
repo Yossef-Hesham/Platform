@@ -100,27 +100,31 @@ Content-Type: application/json
 
 
 ###
-# 12
+# 12 > 7
 POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef",
+    "username_or_email": "youssef_st",
     "password": "12345678y"
 }
 
 ###
 
-POST  http://127.0.0.1:8000/teacher/notifications/send/
+GET  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/student/certificates/7/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDA4MjQ0LCJpYXQiOjE3NTg0MDQ2NDQsImp0aSI6IjdiNmJjYzc5N2NjYTQzZmY4ZTBhZTQ4YWFkZjEwMzA3IiwidXNlcl9pZCI6IjEwIn0.5HjdpuHQKi53zmVo--86eKrV9t-HPJUnk-O9E6RDvL0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4OTgyMjg3LCJpYXQiOjE3NTg5Nzg2ODgsImp0aSI6ImExYjIxOGM2NzRiZjQ4ZmI5YjBhYjA1MDUwYjIyZWY4IiwidXNlcl9pZCI6IjEyIn0.9CVr6oGWdhVyNw_SHbFgCa7Rx_98STILBr_UIR-mhV0
 
-{
-  "title": "New Lecture Material Added",
-  "message": "I've uploaded new lecture slides for this week",
-  "course": 7,
-  "notification_type": "teacher_course"
-}
+
+
+###
+
+GET  http://127.0.0.1:8000/student/certificates/download/6/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4OTgyMjg3LCJpYXQiOjE3NTg5Nzg2ODgsImp0aSI6ImExYjIxOGM2NzRiZjQ4ZmI5YjBhYjA1MDUwYjIyZWY4IiwidXNlcl9pZCI6IjEyIn0.9CVr6oGWdhVyNw_SHbFgCa7Rx_98STILBr_UIR-mhV0
+
+
+
 
 ###
 

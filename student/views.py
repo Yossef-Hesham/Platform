@@ -683,7 +683,7 @@ class CertificateView(APIView):
             
             return Response({
                 'certificate_url': request.build_absolute_uri(certificate.certificate_file.url),
-                'download_url': f"/api/student/certificates/{certificate.id}/download/",
+                'download_url': f"/api/student/certificates/download/{certificate.id}/",
                 'verification_code': certificate.verification_code,
                 'issued_date': certificate.issued_date,
                 'student_name': student.full_name,

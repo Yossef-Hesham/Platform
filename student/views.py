@@ -931,7 +931,70 @@ class CertificateView(APIView):
 
 from django.http import HttpResponse
 
+from django.http import FileResponse
+from django.core.files.storage import default_storage
+
 class CertificateDownloadView(APIView):
+    """Download certificate PDF file with force download option"""
+    permission_classes = [IsStudent]
+    
+    def get(self, request, certificate_id):
+        try:
+            certificate = StudentCertificate.objects.get(
+                id=certificate_id, 
+                student=request.user
+            )
+            
+            if not certificate.certificate_file:
+                return Response(
+                    {'error': 'Certificate not generated yet'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Use Django's FileResponse which handles file existence checks
+            try:
+                filename = f"certificate_{certificate.verification_code}.pdf"
+                force_download = request.GET.get('download', 'false').lower() == 'true'
+                
+                # Check if file exists in storage using the storage API
+                if not default_storage.exists(certificate.certificate_file.name):
+                    return Response(
+                        {'error': 'Certificate file not found on server. Please regenerate certificate.'},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                
+                # Use FileResponse with the file field directly
+                response = FileResponse(
+                    certificate.certificate_file.open('rb'),
+                    content_type='application/pdf',
+                    filename=filename,
+                    as_attachment=force_download
+                )
+                
+                return response
+                
+            except FileNotFoundError:
+                logger.error(f"Certificate file not found: {certificate.certificate_file.name}")
+                return Response(
+                    {'error': 'Certificate file not found on server. Please regenerate certificate.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            except IOError as e:
+                logger.error(f"IOError accessing certificate file: {e}")
+                return Response(
+                    {'error': f'Unable to access certificate file: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+        except StudentCertificate.DoesNotExist:
+            return Response(
+                {'error': 'Certificate not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+
+class CertificateDownloadView2(APIView):
     """Download certificate PDF file with force download option"""
     permission_classes = [IsStudent]
     
@@ -956,9 +1019,16 @@ class CertificateDownloadView(APIView):
             #     )
             
             # Read file content
-            with open(certificate.certificate_file.path, 'rb') as f:
-                file_content = f.read()
-            
+            try:
+                with open(certificate.certificate_file.path, 'rb') as f:
+                    file_content = f.read()
+            except Exception as e:
+                logger.error(f"Error reading certificate file: {e}")
+                return Response(
+                    {'error': 'Error reading certificate file'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
             # Check if user wants to force download (via query parameter)
             force_download = request.GET.get('download', 'false').lower() == 'true'
             

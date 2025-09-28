@@ -5,13 +5,13 @@ POST  http://127.0.0.1:8000/user/register/
 Content-Type: application/json
 
 {
-    "username":"youssef_admin",
-    "email":"youssef123@gmail.com",
+    "username":"youssef_st",
+    "email":"youss4923@gmail.com",
     "password":"12345678y",
     "password_confirm":"12345678y",
     "first_name":"joo",
     "last_name":"hesham",
-    "user_type":"admin",
+    "user_type":"student",
     "phone_number":"0123456789",
     "date_of_birth":"2000-01-01"
 }
@@ -90,12 +90,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###
 
-POST  http://127.0.0.1:8000/user/login/
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssifh111",
-    "password": "22122002K"
+    "username_or_email": "youssef_st",
+    "password": "12345678y"
 }
 
 
@@ -195,8 +195,8 @@ POST http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssifh111",
-    "password": "22122002K"
+    "username_or_email": "youssef_st",
+    "password": "12345678y"
 }
 
 

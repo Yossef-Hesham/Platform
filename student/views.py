@@ -931,6 +931,9 @@ class CertificateView(APIView):
 
 from django.http import HttpResponse
 
+from django.http import FileResponse
+import os
+
 class CertificateDownloadView(APIView):
     """Download certificate PDF file with force download option"""
     permission_classes = [IsStudent]
@@ -948,42 +951,36 @@ class CertificateDownloadView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
             
-            # Check if file exists
-            # if not os.path.exists(certificate.certificate_file.path):
-            #     return Response(
-            #         {'error': 'Certificate file not found on server'},
-            #         status=status.HTTP_404_NOT_FOUND
-            #     )
-            
-            # Read file content
-            with open(certificate.certificate_file.path, 'rb') as f:
-                file_content = f.read()
-            
-            # Check if user wants to force download (via query parameter)
-            force_download = request.GET.get('download', 'false').lower() == 'true'
-            
-            response = HttpResponse(file_content, content_type='application/pdf')
-            filename = f"certificate_{certificate.verification_code}.pdf"
-            
-            if force_download:
-                # Force download
-                response['Content-Disposition'] = f'attachment; filename="{filename}"'
-            else:
-                # Let browser decide (may open in preview)
-                response['Content-Disposition'] = f'inline; filename="{filename}"'
-            
-            response['Content-Length'] = len(file_content)
-            
-            return response
+            # Use Django's FileResponse which handles file existence checks
+            try:
+                filename = f"certificate_{certificate.verification_code}.pdf"
+                force_download = request.GET.get('download', 'false').lower() == 'true'
+                
+                response = FileResponse(
+                    certificate.certificate_file.open('rb'),
+                    content_type='application/pdf',
+                    filename=filename,
+                    as_attachment=force_download
+                )
+                
+                return response
+                
+            except FileNotFoundError:
+                return Response(
+                    {'error': 'Certificate file not found on server. Please contact support.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            except IOError as e:
+                return Response(
+                    {'error': f'Unable to access certificate file: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             
         except StudentCertificate.DoesNotExist:
             return Response(
                 {'error': 'Certificate not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-
-
-
 
 # Add these imports at the top
 from django.db.models import Prefetch, Max

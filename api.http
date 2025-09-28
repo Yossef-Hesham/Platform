@@ -105,23 +105,26 @@ POST  http://127.0.0.1:8000/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "youssef_st",
+    "username_or_email": "joooo",
     "password": "12345678y"
 }
 
 ###
 
-GET  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/student/certificates/7/
+GET  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/student/certificates/13/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4OTgyMjg3LCJpYXQiOjE3NTg5Nzg2ODgsImp0aSI6ImExYjIxOGM2NzRiZjQ4ZmI5YjBhYjA1MDUwYjIyZWY4IiwidXNlcl9pZCI6IjEyIn0.9CVr6oGWdhVyNw_SHbFgCa7Rx_98STILBr_UIR-mhV0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5MDc0MDM5LCJpYXQiOjE3NTkwNzA0NDAsImp0aSI6Ijc5N2FkMzJlM2QyMzQ3NmI5MmMzMTczZWRmY2VlMTI4IiwidXNlcl9pZCI6IjkifQ.9BkURZugQQWfBIxA25HZi1uGxelfNWBWzw4WBWUnH5k
+
 
 
 
 ###
 
-GET  http://127.0.0.1:8000/student/certificates/download/6/
+GET  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/student/certificates/download/6/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4OTgyMjg3LCJpYXQiOjE3NTg5Nzg2ODgsImp0aSI6ImExYjIxOGM2NzRiZjQ4ZmI5YjBhYjA1MDUwYjIyZWY4IiwidXNlcl9pZCI6IjEyIn0.9CVr6oGWdhVyNw_SHbFgCa7Rx_98STILBr_UIR-mhV0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5MDcyNDk5LCJpYXQiOjE3NTkwNjg4OTksImp0aSI6IjRiZWM2YmJkN2MwMzQ0ODFiYTlmM2NkNWEyZjIyN2VjIiwidXNlcl9pZCI6IjEyIn0.5SEGCrE2aP4Xeu20VCmNps4aN1Mu74F9iRw-xJl5M2g
+
+
 
 
 

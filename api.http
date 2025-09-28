@@ -101,12 +101,12 @@ Content-Type: application/json
 
 ###
 # 12 > 7
-POST  http://127.0.0.1:8000/user/login/
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/
 Content-Type: application/json
 
 {
-    "username_or_email": "joooo",
-    "password": "12345678y"
+    "username_or_email": "youssifh123",
+    "password": "22122002HH"
 }
 
 ###

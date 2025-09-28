@@ -625,7 +625,6 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import uuid
 
-
 class CertificateView(APIView):
     """Get certificate for a completed course"""
     permission_classes = [IsStudent]
@@ -666,8 +665,7 @@ class CertificateView(APIView):
             # Generate PDF certificate if not exists or needs regeneration
             if not certificate.certificate_file or self.needs_regeneration(certificate):
                 try:
-                    # This should assign the file content to the FileField
-                    self.generate_certificate_pdf(certificate)
+                    certificate.certificate_file = self.generate_certificate_pdf(certificate)
                     certificate.save()
                 except Exception as e:
                     logger.error(f"Certificate generation failed: {e}")
@@ -676,8 +674,8 @@ class CertificateView(APIView):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
             
-            # Check if file exists and is accessible using storage API
-            if not certificate.certificate_file or not self._file_exists(certificate.certificate_file):
+            # Check if file exists and is accessible
+            if not certificate.certificate_file or not certificate.certificate_file.name:
                 return Response(
                     {'error': 'Certificate file not available'},
                     status=status.HTTP_404_NOT_FOUND
@@ -700,20 +698,14 @@ class CertificateView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
-    def _file_exists(self, file_field):
-        """Check if file exists in storage"""
-        if not file_field.name:
-            return False
-        return file_field.storage.exists(file_field.name)
-    
     def generate_verification_code(self):
         """Generate a unique verification code for certificates"""
         return str(uuid.uuid4()).replace('-', '')[:16].upper()
     
     def needs_regeneration(self, certificate):
         """Check if certificate needs to be regenerated"""
-        # Check if file exists in storage
-        if not certificate.certificate_file or not self._file_exists(certificate.certificate_file):
+        # Regenerate if file doesn't exist on filesystem
+        if not certificate.certificate_file or not os.path.exists(certificate.certificate_file.path):
             return True
         
         # Regenerate if issued date changed significantly
@@ -815,19 +807,17 @@ class CertificateView(APIView):
             
             # Create filename
             filename = f"certificate_{certificate.verification_code}.pdf"
+            filepath = f"certificates/{filename}"
             
-            # Save to certificate model - this is the key fix
-            # Remove any existing file first
-            if certificate.certificate_file:
-                certificate.certificate_file.delete(save=False)
-            
-            # Save the new file content directly to the FileField
+            # Save to certificate model
             certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
+            
+            return filepath
             
         except Exception as e:
             logger.error(f"Error generating certificate PDF: {e}")
             # Fallback to simple certificate
-            self.generate_simple_certificate(certificate)
+            return self.generate_simple_certificate(certificate)
     
     def draw_certificate_design(self, c, width, height):
         """Draw certificate background design"""
@@ -927,25 +917,19 @@ class CertificateView(APIView):
             buffer.close()
             
             filename = f"certificate_{certificate.verification_code}.pdf"
+            filepath = f"certificates/{filename}"
             
-            # Remove any existing file first
-            if certificate.certificate_file:
-                certificate.certificate_file.delete(save=False)
-            
-            # Save the new file content
             certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
+            
+            return filepath
             
         except Exception as e:
             logger.error(f"Error in fallback certificate generation: {e}")
-            # Re-raise the exception to be handled by the caller
-            raise
-
+            # Return a path anyway, the file will be generated on access
+            return f"certificates/certificate_{certificate.verification_code}.pdf"
 
 
 from django.http import HttpResponse
-
-from django.http import FileResponse
-import os
 
 class CertificateDownloadView(APIView):
     """Download certificate PDF file with force download option"""
@@ -964,36 +948,42 @@ class CertificateDownloadView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
             
-            # Use Django's FileResponse which handles file existence checks
-            try:
-                filename = f"certificate_{certificate.verification_code}.pdf"
-                force_download = request.GET.get('download', 'false').lower() == 'true'
-                
-                response = FileResponse(
-                    certificate.certificate_file.open('rb'),
-                    content_type='application/pdf',
-                    filename=filename,
-                    as_attachment=force_download
-                )
-                
-                return response
-                
-            except FileNotFoundError:
-                return Response(
-                    {'error': 'Certificate file not found on server. Please contact support.'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            except IOError as e:
-                return Response(
-                    {'error': f'Unable to access certificate file: {str(e)}'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+            # Check if file exists
+            # if not os.path.exists(certificate.certificate_file.path):
+            #     return Response(
+            #         {'error': 'Certificate file not found on server'},
+            #         status=status.HTTP_404_NOT_FOUND
+            #     )
+            
+            # Read file content
+            with open(certificate.certificate_file.path, 'rb') as f:
+                file_content = f.read()
+            
+            # Check if user wants to force download (via query parameter)
+            force_download = request.GET.get('download', 'false').lower() == 'true'
+            
+            response = HttpResponse(file_content, content_type='application/pdf')
+            filename = f"certificate_{certificate.verification_code}.pdf"
+            
+            if force_download:
+                # Force download
+                response['Content-Disposition'] = f'attachment; filename="{filename}"'
+            else:
+                # Let browser decide (may open in preview)
+                response['Content-Disposition'] = f'inline; filename="{filename}"'
+            
+            response['Content-Length'] = len(file_content)
+            
+            return response
             
         except StudentCertificate.DoesNotExist:
             return Response(
                 {'error': 'Certificate not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+
 
 # Add these imports at the top
 from django.db.models import Prefetch, Max

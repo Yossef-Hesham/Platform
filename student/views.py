@@ -670,19 +670,29 @@ class CertificateView(APIView):
             # Generate PDF certificate if not exists or needs regeneration
             if not certificate.certificate_file or self.needs_regeneration(certificate):
                 try:
-                    # This method now saves the file directly to certificate.certificate_file
-                    success = self.generate_certificate_pdf(certificate)
-                    if success:
+                    # Generate the certificate PDF
+                    pdf_file = self.generate_certificate_pdf_simple(certificate)
+                    if pdf_file:
+                        # Remove any existing file first
+                        if certificate.certificate_file:
+                            certificate.certificate_file.delete(save=False)
+                        
+                        # Save the new file
+                        filename = f"certificate_{certificate.verification_code}.pdf"
+                        certificate.certificate_file.save(filename, ContentFile(pdf_file))
                         certificate.save()
+                        logger.info(f"Certificate PDF generated and saved: {filename}")
                     else:
+                        logger.error("Certificate PDF generation returned None")
                         return Response(
                             {'error': 'Failed to generate certificate PDF'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR
                         )
+                        
                 except Exception as e:
-                    logger.error(f"Certificate generation failed: {e}")
+                    logger.error(f"Certificate generation failed: {str(e)}", exc_info=True)
                     return Response(
-                        {'error': 'Failed to generate certificate. Please try again later.'},
+                        {'error': f'Failed to generate certificate: {str(e)}'},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
             
@@ -704,7 +714,7 @@ class CertificateView(APIView):
             })
             
         except Exception as e:
-            logger.error(f"Certificate view error: {e}")
+            logger.error(f"Certificate view error: {str(e)}", exc_info=True)
             return Response(
                 {'error': 'Internal server error'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -731,232 +741,61 @@ class CertificateView(APIView):
             return True
             
         return False
-    
-    def generate_certificate_pdf(self, certificate):
-        """Generate PDF certificate using ReportLab - returns True if successful"""
+
+    def generate_certificate_pdf_simple(self, certificate):
+        """Simple PDF generation with minimal dependencies"""
         try:
+            logger.info("Starting PDF generation...")
+            
             # Create a buffer for the PDF
             buffer = BytesIO()
             
-            # Create the PDF object
+            # Create the PDF object with minimal settings
             c = canvas.Canvas(buffer, pagesize=letter)
             width, height = letter
             
-            # Register fonts (you might need to add font files to your project)
-            try:
-                # Add these font files to your project or use system fonts
-                font_path = os.path.join(settings.BASE_DIR, 'static', 'fonts')
-                
-                # Try to register custom fonts, fallback to standard fonts if not available
-                if os.path.exists(os.path.join(font_path, 'OpenSans-Bold.ttf')):
-                    pdfmetrics.registerFont(TTFont('OpenSans-Bold', os.path.join(font_path, 'OpenSans-Bold.ttf')))
-                if os.path.exists(os.path.join(font_path, 'OpenSans-Regular.ttf')):
-                    pdfmetrics.registerFont(TTFont('OpenSans-Regular', os.path.join(font_path, 'OpenSans-Regular.ttf')))
-            except:
-                pass  # Use standard fonts if custom fonts aren't available
+            logger.info("Canvas created")
             
-            # Add background design or border
-            self.draw_certificate_design(c, width, height)
+            # Simple certificate content - minimal styling to avoid issues
+            c.setFont('Helvetica-Bold', 24)
+            c.drawCentredString(width/2, height - 100, "CERTIFICATE OF COMPLETION")
             
-            # Add certificate title
-            c.setFillColor(HexColor('#2C3E50'))  # Dark blue
-            c.setFont('Helvetica-Bold', 36)
-            c.drawCentredString(width/2, height - 2*inch, "CERTIFICATE OF COMPLETION")
+            c.setFont('Helvetica', 16)
+            c.drawCentredString(width/2, height - 150, "This certifies that")
             
-            # Add decorative line
-            c.setStrokeColor(HexColor('#3498DB'))
-            c.setLineWidth(2)
-            c.line(width/2 - 2*inch, height - 2.3*inch, width/2 + 2*inch, height - 2.3*inch)
+            c.setFont('Helvetica-Bold', 20)
+            c.drawCentredString(width/2, height - 200, certificate.student.full_name.upper())
             
-            # Add "This is to certify that"
-            c.setFillColor(HexColor('#7F8C8D'))
-            c.setFont('Helvetica', 18)
-            c.drawCentredString(width/2, height - 3*inch, "This is to certify that")
+            c.setFont('Helvetica', 16)
+            c.drawCentredString(width/2, height - 250, "has successfully completed the course")
             
-            # Add student name
-            c.setFillColor(HexColor('#2C3E50'))
-            c.setFont('Helvetica-Bold', 28)
-            student_name = certificate.student.full_name.upper()
-            c.drawCentredString(width/2, height - 3.8*inch, student_name)
+            c.setFont('Helvetica-Bold', 18)
+            c.drawCentredString(width/2, height - 300, certificate.course.title)
             
-            # Add "has successfully completed the course"
-            c.setFillColor(HexColor('#7F8C8D'))
-            c.setFont('Helvetica', 18)
-            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course")
-            
-            # Add course title
-            c.setFillColor(HexColor('#E74C3C'))
-            c.setFont('Helvetica-Bold', 22)
-            course_title = certificate.course.title
-            # Wrap text if too long
-            if len(course_title) > 40:
-                lines = self.wrap_text(course_title, 40)
-                for i, line in enumerate(lines):
-                    c.drawCentredString(width/2, height - (5.2 + i*0.4)*inch, line)
-            else:
-                c.drawCentredString(width/2, height - 5.2*inch, course_title)
-            
-            # Add completion date
-            c.setFillColor(HexColor('#7F8C8D'))
-            c.setFont('Helvetica', 14)
+            c.setFont('Helvetica', 12)
             completion_date = certificate.issued_date.strftime("%B %d, %Y")
-            c.drawCentredString(width/2, height - 6.2*inch, f"Completed on: {completion_date}")
+            c.drawCentredString(width/2, height - 350, f"Completed on: {completion_date}")
+            c.drawCentredString(width/2, height - 370, f"Verification Code: {certificate.verification_code}")
             
-            # Add verification code
-            c.setFillColor(HexColor('#95A5A6'))
-            c.setFont('Helvetica-Oblique', 12)
-            c.drawCentredString(width/2, height - 6.8*inch, f"Verification Code: {certificate.verification_code}")
-            
-            # Add platform URL
-            c.setFillColor(HexColor('#BDC3C7'))
-            c.setFont('Helvetica', 10)
-            c.drawCentredString(width/2, 0.5*inch, "Verify at: https://yourplatform.com/verify-certificate/")
-            
-            # Add signatures area
-            self.draw_signatures(c, width, height)
+            logger.info("Content added to PDF")
             
             # Save the PDF
             c.showPage()
             c.save()
             
+            logger.info("PDF saved to buffer")
+            
             # Get PDF content from buffer
             pdf_content = buffer.getvalue()
             buffer.close()
             
-            # Create filename
-            filename = f"certificate_{certificate.verification_code}.pdf"
+            logger.info(f"PDF generated successfully, size: {len(pdf_content)} bytes")
             
-            # Remove any existing file first to avoid conflicts
-            if certificate.certificate_file:
-                certificate.certificate_file.delete(save=False)
-            
-            # Save to certificate model
-            certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
-            
-            logger.info(f"Successfully generated certificate PDF: {filename}")
-            return True
+            return pdf_content
             
         except Exception as e:
-            logger.error(f"Error generating certificate PDF: {e}")
-            # Fallback to simple certificate
-            try:
-                return self.generate_simple_certificate(certificate)
-            except Exception as fallback_error:
-                logger.error(f"Fallback certificate generation also failed: {fallback_error}")
-                return False
-    
-    def draw_certificate_design(self, c, width, height):
-        """Draw certificate background design"""
-        # Add decorative border
-        c.setStrokeColor(HexColor('#3498DB'))
-        c.setLineWidth(3)
-        c.rect(0.5*inch, 0.5*inch, width - 1*inch, height - 1*inch)
-        
-        # Add decorative corners
-        corner_size = 0.3*inch
-        corners = [
-            (0.5*inch, 0.5*inch),  # bottom-left
-            (0.5*inch, height - 0.5*inch),  # top-left
-            (width - 0.5*inch, 0.5*inch),  # bottom-right
-            (width - 0.5*inch, height - 0.5*inch)  # top-right
-        ]
-        
-        for x, y in corners:
-            c.setLineWidth(2)
-            c.line(x, y, x + corner_size, y)
-            c.line(x, y, x, y + corner_size)
-        
-        # Add watermark (optional)
-        try:
-            watermark_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'watermark.png')
-            if os.path.exists(watermark_path):
-                watermark = ImageReader(watermark_path)
-                c.drawImage(watermark, width/2 - 1*inch, height/2 - 1*inch, 
-                           width=2*inch, height=2*inch, mask='auto')
-        except:
-            pass
-    
-    def draw_signatures(self, c, width, height):
-        """Draw signature lines"""
-        # Instructor signature
-        c.setStrokeColor(HexColor('#7F8C8D'))
-        c.setLineWidth(1)
-        c.line(width/4 - 1.5*inch, 1.5*inch, width/4 + 1.5*inch, 1.5*inch)
-        c.setFillColor(HexColor('#7F8C8D'))
-        c.setFont('Helvetica', 12)
-        c.drawCentredString(width/4, 1.2*inch, "Instructor Signature")
-        
-        # Platform signature
-        c.line(3*width/4 - 1.5*inch, 1.5*inch, 3*width/4 + 1.5*inch, 1.5*inch)
-        c.drawCentredString(3*width/4, 1.2*inch, "Platform Seal")
-    
-    def wrap_text(self, text, max_length):
-        """Wrap text into multiple lines if too long"""
-        words = text.split()
-        lines = []
-        current_line = []
-        
-        for word in words:
-            if len(' '.join(current_line + [word])) <= max_length:
-                current_line.append(word)
-            else:
-                lines.append(' '.join(current_line))
-                current_line = [word]
-        
-        if current_line:
-            lines.append(' '.join(current_line))
-        
-        return lines
-    
-    def generate_simple_certificate(self, certificate):
-        """Fallback function for simple certificate generation - returns True if successful"""
-        try:
-            buffer = BytesIO()
-            c = canvas.Canvas(buffer, pagesize=letter)
-            width, height = letter
-            
-            # Simple certificate design
-            c.setFont('Helvetica-Bold', 24)
-            c.drawCentredString(width/2, height - 2*inch, "CERTIFICATE OF COMPLETION")
-            
-            c.setFont('Helvetica', 16)
-            c.drawCentredString(width/2, height - 3*inch, "This certifies that")
-            
-            c.setFont('Helvetica-Bold', 20)
-            c.drawCentredString(width/2, height - 3.5*inch, certificate.student.full_name.upper())
-            
-            c.setFont('Helvetica', 16)
-            c.drawCentredString(width/2, height - 4.5*inch, "has successfully completed")
-            
-            c.setFont('Helvetica-Bold', 18)
-            c.drawCentredString(width/2, height - 5*inch, certificate.course.title)
-            
-            c.setFont('Helvetica', 12)
-            completion_date = certificate.issued_date.strftime("%B %d, %Y")
-            c.drawCentredString(width/2, height - 6*inch, f"Completed on: {completion_date}")
-            c.drawCentredString(width/2, height - 6.5*inch, f"Verification Code: {certificate.verification_code}")
-            
-            c.showPage()
-            c.save()
-            
-            pdf_content = buffer.getvalue()
-            buffer.close()
-            
-            filename = f"certificate_{certificate.verification_code}.pdf"
-            
-            # Remove any existing file first
-            if certificate.certificate_file:
-                certificate.certificate_file.delete(save=False)
-            
-            # Save the new file content
-            certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
-            
-            logger.info(f"Successfully generated fallback certificate PDF: {filename}")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Error in fallback certificate generation: {e}")
-            return False
+            logger.error(f"Error in simple PDF generation: {str(e)}", exc_info=True)
+            return None
 
 
 class CertificateView2(APIView):

@@ -670,8 +670,15 @@ class CertificateView(APIView):
             # Generate PDF certificate if not exists or needs regeneration
             if not certificate.certificate_file or self.needs_regeneration(certificate):
                 try:
-                    self.generate_certificate_pdf(certificate)
-                    certificate.save()
+                    # This method now saves the file directly to certificate.certificate_file
+                    success = self.generate_certificate_pdf(certificate)
+                    if success:
+                        certificate.save()
+                    else:
+                        return Response(
+                            {'error': 'Failed to generate certificate PDF'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                        )
                 except Exception as e:
                     logger.error(f"Certificate generation failed: {e}")
                     return Response(
@@ -726,7 +733,7 @@ class CertificateView(APIView):
         return False
     
     def generate_certificate_pdf(self, certificate):
-        """Generate PDF certificate using ReportLab"""
+        """Generate PDF certificate using ReportLab - returns True if successful"""
         try:
             # Create a buffer for the PDF
             buffer = BytesIO()
@@ -823,13 +830,20 @@ class CertificateView(APIView):
             if certificate.certificate_file:
                 certificate.certificate_file.delete(save=False)
             
-            # Save to certificate model - don't return anything, just save the file
+            # Save to certificate model
             certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
+            
+            logger.info(f"Successfully generated certificate PDF: {filename}")
+            return True
             
         except Exception as e:
             logger.error(f"Error generating certificate PDF: {e}")
             # Fallback to simple certificate
-            self.generate_simple_certificate(certificate)
+            try:
+                return self.generate_simple_certificate(certificate)
+            except Exception as fallback_error:
+                logger.error(f"Fallback certificate generation also failed: {fallback_error}")
+                return False
     
     def draw_certificate_design(self, c, width, height):
         """Draw certificate background design"""
@@ -895,7 +909,7 @@ class CertificateView(APIView):
         return lines
     
     def generate_simple_certificate(self, certificate):
-        """Fallback function for simple certificate generation"""
+        """Fallback function for simple certificate generation - returns True if successful"""
         try:
             buffer = BytesIO()
             c = canvas.Canvas(buffer, pagesize=letter)
@@ -937,10 +951,12 @@ class CertificateView(APIView):
             # Save the new file content
             certificate.certificate_file.save(filename, ContentFile(pdf_content), save=False)
             
+            logger.info(f"Successfully generated fallback certificate PDF: {filename}")
+            return True
+            
         except Exception as e:
             logger.error(f"Error in fallback certificate generation: {e}")
-            # Re-raise the exception to be handled by the caller
-            raise Exception(f"Fallback certificate generation also failed: {e}")
+            return False
 
 
 class CertificateView2(APIView):

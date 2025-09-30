@@ -56,17 +56,9 @@ ALLOWED_HOSTS = ['*']
 DEBUG = os.environ.get("DB_LIVE", "False") == "True"
 
 
-# CSRF_TRUSTED_ORIGINS = [
-#     'http://localhost:5173',
-#     'http://localhost:8000',
-# ]
+CSRF_TRUSTED_ORIGINS = ['*']
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:8000',
-    "https://edu-platform-e.web.app",
-    "https://edu-platform-e.firebaseapp.com",
-]
+CORS_ALLOWED_ORIGINS = ['*']
 
 
 # Application definition

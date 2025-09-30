@@ -1340,7 +1340,7 @@ class CertificateView(APIView):
             
             # Simple certificate design
             c.setFont('Helvetica-Bold', 24)
-            c.drawCentredString(width/2, height - 2*inch, "CERTIFICATE OF COMPLETION")
+            c.drawCentredString(width/2, height - 3*inch, "CERTIFICATE OF COMPLETION")
             
             c.setFont('Helvetica', 16)
             c.drawCentredString(width/2, height - 3*inch, "This certifies that")

@@ -52,6 +52,10 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.title} - {self.teacher.full_name}"
     
+    @property
+    def get_title(self):
+        return self.title.strip().title()
+    
     def update_statistics(self):
         """Update course statistics"""
         self.total_sections = self.sections.count()

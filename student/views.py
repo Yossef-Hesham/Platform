@@ -1220,12 +1220,12 @@ class CertificateView(APIView):
             # Add "has successfully completed the course"
             c.setFillColor(HexColor('#7F8C8D'))
             c.setFont('Helvetica', 18)
-            c.drawCentredString(width/2, height - 4.6*inch, f"has successfully completed the course {certificate.course.title}")
+            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course")
             
             # Add course title
             c.setFillColor(HexColor('#E74C3C'))
             c.setFont('Helvetica-Bold', 22)
-            course_title = certificate.course.title
+            course_title = certificate.course.get_title()
             # Wrap text if too long
             if len(course_title) > 40:
                 lines = self.wrap_text(course_title, 40)

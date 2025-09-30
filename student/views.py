@@ -1349,7 +1349,7 @@ class CertificateView(APIView):
             c.drawCentredString(width/2, height - 3.5*inch, certificate.student.full_name.upper())
             
             c.setFont('Helvetica', 16)
-            c.drawCentredString(width/2, height - 4.5*inch, "has successfully completed")
+            c.drawCentredString(width/2, height - 4.5*inch, "has successfully ")
             
             # c.setFont('Helvetica-Bold', 18)
             # c.drawCentredString(width/2, height - 5*inch, certificate.course.title)

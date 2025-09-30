@@ -64,7 +64,8 @@ DEBUG = os.environ.get("DB_LIVE", "False") == "True"
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:8000',
-
+    "https://edu-platform-e.web.app",
+    "https://edu-platform-e.firebaseapp.com",
 ]
 
 

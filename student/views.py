@@ -1220,19 +1220,19 @@ class CertificateView(APIView):
             # Add "has successfully completed the course"
             c.setFillColor(HexColor('#7F8C8D'))
             c.setFont('Helvetica', 18)
-            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course ", certificate.course.title)
+            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course")
             
             # Add course title
-            # c.setFillColor(HexColor('#E74C3C'))
+            c.setFillColor(HexColor('#E74C3C'))
             c.setFont('Helvetica-Bold', 22)
             course_title = certificate.course.title
             # Wrap text if too long
-            # if len(course_title) > 40:
-            #     lines = self.wrap_text(course_title, 40)
-            #     for i, line in enumerate(lines):
-            #         c.drawCentredString(width/2, height - (5.2 + i*0.4)*inch, line)
-            # else:
-            #     c.drawCentredString(width/2, height - 5.2*inch, course_title)
+            if len(course_title) > 40:
+                lines = self.wrap_text(course_title, 40)
+                for i, line in enumerate(lines):
+                    c.drawCentredString(width/2, height - (5.2 + i*0.4)*inch, line)
+            else:
+                c.drawCentredString(width/2, height - 5.2*inch, course_title)
             
             # Add completion date
             c.setFillColor(HexColor('#7F8C8D'))
@@ -1351,8 +1351,8 @@ class CertificateView(APIView):
             c.setFont('Helvetica', 16)
             c.drawCentredString(width/2, height - 4.5*inch, "has successfully completed")
             
-            c.setFont('Helvetica-Bold', 18)
-            c.drawCentredString(width/2, height - 5*inch, certificate.course.title)
+            # c.setFont('Helvetica-Bold', 18)
+            # c.drawCentredString(width/2, height - 5*inch, certificate.course.title)
             
             c.setFont('Helvetica', 12)
             completion_date = certificate.issued_date.strftime("%B %d, %Y")

@@ -1217,10 +1217,11 @@ class CertificateView(APIView):
             student_name = certificate.student.full_name.upper()
             c.drawCentredString(width/2, height - 3.8*inch, student_name)
             
+            course_title = certificate.course.get_title()
             # Add "has successfully completed the course"
             c.setFillColor(HexColor('#7F8C8D'))
             c.setFont('Helvetica', 18)
-            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course")
+            c.drawCentredString(width/2, height - 4.6*inch, "has successfully completed the course {}".format(course_title))
             
             # Add course title
             c.setFillColor(HexColor('#E74C3C'))

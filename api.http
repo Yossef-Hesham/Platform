@@ -88,6 +88,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
     "child_username": "youssef_st"
 }
 
+
+###
+
+POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/verify-email/6577/
+Content-Type: application/json
+
 ###
 
 POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/login/

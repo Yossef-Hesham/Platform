@@ -32,7 +32,7 @@ class StudentCertificate(models.Model):
     )
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='certificates')
     issued_date = models.DateTimeField(auto_now_add=True)
-    certificate_file = models.FileField(upload_to='certificates/', null=True, blank=True)
+    certificate_file = models.URLField(max_length=500, null=True, blank=True)
     verification_code = models.CharField(max_length=100, unique=True)
     
     class Meta:

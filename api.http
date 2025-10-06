@@ -111,8 +111,8 @@ POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/l
 Content-Type: application/json
 
 {
-    "username_or_email": "youssifh2",
-    "password": "22122002HH"
+    "username_or_email": "youssifh1",
+    "password": "22122002H"
 }
 
 ###
@@ -210,17 +210,23 @@ Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/student/my-courses/
+POST http://127.0.0.1:8000/student/enroll/temporary/2/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzY3MDg1LCJpYXQiOjE3NTk3NjM0ODYsImp0aSI6IjQxMDcxMTQzOTFmNDRmMzk5MWZhYTE2YzU2YWIxODlmIiwidXNlcl9pZCI6IjEifQ.HRvpCZTzTfsO4rA5Eq_18MGVUvrwDmTBVEJUgsHMaB0
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzgyNjY4LCJpYXQiOjE3NTk3NzkwNjgsImp0aSI6IjdhM2I3ZWM2ZjM1OTQ1ZTU5YzJmYjRmZmYyMjgyMjBmIiwidXNlcl9pZCI6IjIifQ.urEC_28m_soJwM_F-TUwcGQ6ZqJXQm3o7AmqqnnVGfk
 
 
 ###
 
-POST http://127.0.0.1:8000/teacher/payments/2/1/
+GET http://127.0.0.1:8000/student/my-courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzY3MDYwLCJpYXQiOjE3NTk3NjM0NjAsImp0aSI6Ijc4NzgwMzQ1YjE1YzRiNTk4NmI0N2Q2MjhjMzNmMmY5IiwidXNlcl9pZCI6IjMifQ.10kM33I8tMFyJ2tSC3OoxrehVZJs48hMzXvowCGTna0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzgyNjY4LCJpYXQiOjE3NTk3NzkwNjgsImp0aSI6IjdhM2I3ZWM2ZjM1OTQ1ZTU5YzJmYjRmZmYyMjgyMjBmIiwidXNlcl9pZCI6IjIifQ.urEC_28m_soJwM_F-TUwcGQ6ZqJXQm3o7AmqqnnVGfk
+
+# Enrollment.objects.filter(id=3,course__id=2).update(progress_percentage=100)
+###
+
+POST http://127.0.0.1:8000/teacher/payments/2/2/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzgwNTcwLCJpYXQiOjE3NTk3NzY5NzAsImp0aSI6ImYzMjJjZTUxYWIxOTQwMTQ5YjgyZWY5MzVhNzNiNjM4IiwidXNlcl9pZCI6IjMifQ.UCHSMZKzgVGsrMwQAjsAd0ku83twIpMRXQsd_IoM-KE
 
 
 

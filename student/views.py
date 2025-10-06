@@ -630,7 +630,6 @@ class StudentNotesView(APIView):
         note.delete()
         return Response({'status': 'note deleted'})
 
-
 class CertificateView(APIView):
     permission_classes = [IsStudent]
     
@@ -638,6 +637,7 @@ class CertificateView(APIView):
         try:
             student = request.user
             course = get_object_or_404(Course, id=course_id)
+            teacher_name = course.teacher.username  # Get teacher name here
             
             # Check if student has completed the course
             enrollment = get_object_or_404(
@@ -675,7 +675,8 @@ class CertificateView(APIView):
             # Generate PDF certificate if not exists or needs regeneration
             if not certificate.certificate_file or self.needs_regeneration(certificate):
                 try:
-                    cloudinary_url = self.generate_and_upload_certificate_pdf(certificate)
+                    # Pass teacher_name to the PDF generation method
+                    cloudinary_url = self.generate_and_upload_certificate_pdf(certificate, teacher_name)
                     if cloudinary_url:
                         certificate.certificate_file = cloudinary_url
                         certificate.save()
@@ -706,6 +707,7 @@ class CertificateView(APIView):
                 'issued_date': certificate.issued_date,
                 'student_name': student.full_name,
                 'course_title': course.title,
+                'teacher_name': teacher_name,  # Include teacher name in response
                 'message': 'Certificate generated successfully' if created else 'Certificate retrieved successfully'
             })
             
@@ -741,12 +743,13 @@ class CertificateView(APIView):
             
         return False
     
-    def generate_and_upload_certificate_pdf(self, certificate):
+    def generate_and_upload_certificate_pdf(self, certificate, teacher_name):
         """Generate PDF certificate and upload to Cloudinary"""
         try:
             logger.info(f"Starting certificate generation for verification code: {certificate.verification_code}")
             
-            pdf_content = self.generate_certificate_pdf(certificate)
+            # Pass teacher_name to the PDF generation method
+            pdf_content = self.generate_certificate_pdf(certificate, teacher_name)
             
             if not pdf_content:
                 logger.error("PDF generation returned None or empty content")
@@ -800,15 +803,13 @@ class CertificateView(APIView):
         logger.info(f"Student name: {student_name}, Course title: {course_title}")
         return student_name, course_title
     
-   
-    
-    def generate_certificate_pdf(self, certificate):
-        """Generate PDF certificate with proper Arabic font support"""
+    def generate_certificate_pdf(self, certificate, teacher_name):
+        """Generate PDF certificate with proper Arabic font support and teacher signature"""
         try:
             # Get display text as is
             student_name, course_title = self.get_display_text(certificate)
             
-            logger.info(f"Certificate text - Student: '{student_name}', Course: '{course_title}'")
+            logger.info(f"Certificate text - Student: '{student_name}', Course: '{course_title}', Teacher: '{teacher_name}'")
             
             # Import required libraries
             from reportlab.pdfbase import pdfmetrics
@@ -828,7 +829,7 @@ class CertificateView(APIView):
             width, height = A4
             
             # Register fonts that support Arabic
-            self.register_arabic_fonts(c)
+            self.register_arabic_fonts()
             
             # Process Arabic text
             def prepare_arabic_text(text):
@@ -852,10 +853,12 @@ class CertificateView(APIView):
             # Prepare texts
             display_student_name = prepare_arabic_text(student_name)
             display_course_title = prepare_arabic_text(course_title)
+            display_teacher_name = prepare_arabic_text(teacher_name)
             
             # Set the font based on text content
             student_font = "ArabicFont" if self.contains_arabic(student_name) else "Helvetica-Bold"
             course_font = "ArabicFont" if self.contains_arabic(course_title) else "Helvetica-Bold"
+            teacher_font = "ArabicFont" if self.contains_arabic(teacher_name) else "Helvetica"
             
             # Certificate design
             self.draw_certificate_design(c, width, height)
@@ -925,8 +928,8 @@ class CertificateView(APIView):
             c.setFont('Helvetica-Oblique', 12)
             c.drawCentredString(width/2, height - 7*inch, f"Verification Code: {certificate.verification_code}")
             
-            # Signature lines
-            self.draw_signature_lines(c, width, height)
+            # Signature lines with teacher name
+            self.draw_signature_lines(c, width, height, display_teacher_name, teacher_font)
             
             # Save PDF
             c.showPage()
@@ -944,24 +947,20 @@ class CertificateView(APIView):
             logger.error(traceback.format_exc())
             return None
     
-    def register_arabic_fonts(self, canvas):
+    def register_arabic_fonts(self):
         """Register fonts that support Arabic characters"""
         try:
             # Try different font paths - DejaVu fonts are good for Arabic
             font_paths = [
-                # Common system paths for DejaVu fonts
                 '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
                 '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
                 '/System/Library/Fonts/Arial.ttf',
                 'C:/Windows/Fonts/arial.ttf',
                 'C:/Windows/Fonts/tahoma.ttf',
-                # You can also download and include fonts in your project
                 'static/fonts/DejaVuSans.ttf',
                 'media/fonts/DejaVuSans.ttf',
             ]
             
-            # Also try to use reportlab's built-in font search
-            from reportlab.lib.fonts import addMapping
             from reportlab.pdfbase import pdfmetrics
             from reportlab.pdfbase.ttfonts import TTFont
             
@@ -971,10 +970,6 @@ class CertificateView(APIView):
                 try:
                     if os.path.exists(font_path):
                         pdfmetrics.registerFont(TTFont('ArabicFont', font_path))
-                        # Also register bold variant if available
-                        bold_path = font_path.replace('.ttf', '-Bold.ttf')
-                        if os.path.exists(bold_path):
-                            pdfmetrics.registerFont(TTFont('ArabicFont-Bold', bold_path))
                         logger.info(f"✅ Successfully registered Arabic font: {font_path}")
                         arabic_font_registered = True
                         break
@@ -984,8 +979,6 @@ class CertificateView(APIView):
             
             if not arabic_font_registered:
                 logger.warning("❌ No Arabic font found, Arabic text may not display correctly")
-                # Fallback: use Helvetica (will show boxes for Arabic)
-                pdfmetrics.registerFont(TTFont('ArabicFont', 'Helvetica'))
                 
         except Exception as e:
             logger.error(f"Font registration error: {e}")
@@ -1016,17 +1009,34 @@ class CertificateView(APIView):
         canvas.setLineWidth(2)
         canvas.line(width/2 - 2*inch, height - 2.3*inch, width/2 + 2*inch, height - 2.3*inch)
     
-    def draw_signature_lines(self, canvas, width, height):
-        """Draw signature lines"""
+    def draw_signature_lines(self, canvas, width, height, teacher_name, teacher_font="Helvetica"):
+        """Draw signature lines with teacher name"""
+        # Instructor signature line
         canvas.setStrokeColor(HexColor('#7F8C8D'))
         canvas.setLineWidth(1)
         canvas.line(width/4 - 1.5*inch, 1.5*inch, width/4 + 1.5*inch, 1.5*inch)
+        
+        # Teacher name above the line
+        canvas.setFillColor(HexColor('#2C3E50'))
+        canvas.setFont(teacher_font, 12)
+        
+        if self.contains_arabic(teacher_name):
+            # For Arabic teacher name, adjust positioning
+            text_width = canvas.stringWidth(teacher_name, teacher_font, 12)
+            canvas.drawString((width/4 - 1.5*inch) + (3*inch - text_width)/2, 1.7*inch, teacher_name)
+        else:
+            canvas.drawCentredString(width/4, 1.7*inch, teacher_name)
+        
+        # "Instructor Signature" text below the line
         canvas.setFillColor(HexColor('#7F8C8D'))
-        canvas.setFont('Helvetica', 12)
+        canvas.setFont('Helvetica', 10)
         canvas.drawCentredString(width/4, 1.2*inch, "Instructor Signature")
         
-        canvas.line(3*width/4 - 1.5*inch, 1.5*inch, 3*width/4 + 1.5*inch, 1.5*inch)
-        canvas.drawCentredString(3*width/4, 1.2*inch, "Platform Seal")
+        # Platform seal (right side)
+        # canvas.line(3*width/4 - 1.5*inch, 1.5*inch, 3*width/4 + 1.5*inch, 1.5*inch)
+        # canvas.setFillColor(HexColor('#7F8C8D'))
+        # canvas.setFont('Helvetica', 10)
+        # canvas.drawCentredString(3*width/4, 1.2*inch, "Platform Seal")
     
     def contains_arabic(self, text):
         """Check if text contains Arabic characters"""
@@ -1091,66 +1101,7 @@ class CertificateView(APIView):
         
         if current_line:
             lines.append(' '.join(current_line))
-        
-        return lines
-   
-    
-   
-    def contains_arabic(self, text):
-        """Check if text contains Arabic characters"""
-        if not text:
-            return False
-        
-        # Arabic Unicode range
-        arabic_range = range(0x0600, 0x06FF)
-        
-        for char in str(text):
-            if ord(char) in arabic_range:
-                return True
-        return False
-    
-    def wrap_arabic_text(self, text, max_chars):
-        """Wrap Arabic text into multiple lines"""
-        if not text:
-            return []
-        
-        words = text.split()
-        lines = []
-        current_line = []
-        current_length = 0
-        
-        for word in words:
-            if current_length + len(word) <= max_chars:
-                current_line.append(word)
-                current_length += len(word) + 1  # +1 for space
-            else:
-                if current_line:
-                    lines.append(' '.join(current_line))
-                current_line = [word]
-                current_length = len(word)
-        
-        if current_line:
-            lines.append(' '.join(current_line))
-        
-        return lines
-    
-    def wrap_text(self, text, max_length):
-        """Wrap text into multiple lines"""
-        words = text.split()
-        lines = []
-        current_line = []
-        
-        for word in words:
-            if len(' '.join(current_line + [word])) <= max_length:
-                current_line.append(word)
-            else:
-                if current_line:
-                    lines.append(' '.join(current_line))
-                current_line = [word]
-        
-        if current_line:
-            lines.append(' '.join(current_line))
-        
+
         return lines
 
 class CertificateDownloadView(APIView):

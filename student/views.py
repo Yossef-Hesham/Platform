@@ -1586,15 +1586,22 @@ class LearningStatisticsView(APIView):
         })
         
 # student/views.py (enhanced version)
+
+from .models import Payment
 class TemporaryEnrollmentView(APIView):
-    """Temporarily enroll student in a course without payment"""
     permission_classes = [IsStudent]
     
     def post(self, request, course_id):
         student = request.user
         
-        # Validate course exists
-        serializer = TemporaryEnrollmentSerializer(data={'course_id': course_id})
+        # Get payment_method from request data
+        payment_method = request.data.get('payment_method')
+        
+        # Validate input data
+        serializer = TemporaryEnrollmentSerializer(data={
+            'course_id': course_id,
+            'payment_method': payment_method
+        })
         if not serializer.is_valid():
             return Response(
                 {'error': serializer.errors},
@@ -1613,14 +1620,40 @@ class TemporaryEnrollmentView(APIView):
                 {'error': 'Already enrolled in this course'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        elif Enrollment.objects.filter(
+                student=student,
+                course=course,
+                is_active=False
+            ).exists():
+            return Response(
+                {'error': 'Already enrolled in this course'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        # Create enrollment without payment
-        enrollment = Enrollment.objects.create(
-            student=student,
-            course=course,
-            is_active=True,
-            progress_percentage=0.00
-        )
+        try:
+            # Create enrollment without payment
+            enrollment = Enrollment.objects.create(
+                student=student,
+                course=course,
+                is_active=False,
+                progress_percentage=0.00
+            )
+        except Exception as e:
+            logger.error(f"Enrollment creation failed: {e}")
+            return Response(
+                {'error': 'Failed to create enrollment. Please try again later.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        try:
+            # Use the provided payment_method
+            Payment.objects.create(
+                student=student, 
+                course=course, 
+                payment_method=payment_method
+            )
+        except Exception as e:
+            logger.error(f"Payment record creation failed: {e}")
         
         # Update course enrollment count
         course.total_enrollments = course.enrollments.filter(is_active=True).count()
@@ -1629,16 +1662,16 @@ class TemporaryEnrollmentView(APIView):
         return Response({
             'message': 'Successfully enrolled in course',
             'enrollment_id': enrollment.id,
+            'student_id': student.id,
             'course': {
                 'id': course.id,
                 'title': course.title,
                 'teacher': course.teacher.full_name
             },
-            'enrolled_at': enrollment.enrolled_at
+            'enrolled_at': enrollment.enrolled_at,
+            'payment_method': payment_method  # Include payment method in response
         }, status=status.HTTP_201_CREATED)
-
 class BulkTemporaryEnrollmentView(APIView):
-    """Temporarily enroll student in multiple courses without payment"""
     permission_classes = [IsStudent]
     
     def post(self, request):
@@ -1674,7 +1707,7 @@ class BulkTemporaryEnrollmentView(APIView):
             enrollment = Enrollment.objects.create(
                 student=student,
                 course=course,
-                is_active=True,
+                is_active=False,
                 progress_percentage=0.00
             )
             
@@ -1954,3 +1987,12 @@ class MarkNotificationAsReadView(generics.UpdateAPIView):
             'status': 'success',
             'message': 'Notification marked as read'
         })
+
+
+
+class PaymentView(generics.ListCreateAPIView):
+    serializer_class = PaymentSerializer
+    permission_classes = [IsStudent]
+
+    def get_queryset(self):
+        return Payment.objects.filter(student=self.request.user)    

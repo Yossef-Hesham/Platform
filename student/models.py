@@ -60,3 +60,15 @@ class StudentNote(models.Model):
     def __str__(self):
         return f"Note by {self.student.full_name} on {self.section.title}"
     
+class Payment(models.Model):
+
+    class choices(models.TextChoices):
+        instapay = 'instapay', 'Instapay'
+        vodafone_cash = 'vodafone cash', 'Vodafone Cash'
+        orange_cash = 'orange cash', 'Orange Cash'
+    
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='student_payments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_payments')
+    payment_method = models.CharField(max_length=20, choices=choices.choices)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    

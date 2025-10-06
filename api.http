@@ -111,7 +111,7 @@ POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/l
 Content-Type: application/json
 
 {
-    "username_or_email": "youssifh123",
+    "username_or_email": "youssifh2",
     "password": "22122002HH"
 }
 
@@ -210,16 +210,17 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:8000/api/link-child/
+GET http://127.0.0.1:8000/student/my-courses/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2MTI3NjE3LCJpYXQiOjE3NTYxMjczMTcsImp0aSI6IjEyNjZjNGQ5ODkyYzQ1ZjNhZWViZjc5NzY5NzA2YTU4IiwidXNlcl9pZCI6IjIyIn0.JGQ6rX1GY1gg1D2p-Obd0_nVI3IpJLzd9i_7UqXdwM4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzY3MDg1LCJpYXQiOjE3NTk3NjM0ODYsImp0aSI6IjQxMDcxMTQzOTFmNDRmMzk5MWZhYTE2YzU2YWIxODlmIiwidXNlcl9pZCI6IjEifQ.HRvpCZTzTfsO4rA5Eq_18MGVUvrwDmTBVEJUgsHMaB0
 
 
-{
 
-    "child_username": "hamzzyy"
-}
+###
 
+POST http://127.0.0.1:8000/teacher/payments/2/1/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzY3MDYwLCJpYXQiOjE3NTk3NjM0NjAsImp0aSI6Ijc4NzgwMzQ1YjE1YzRiNTk4NmI0N2Q2MjhjMzNmMmY5IiwidXNlcl9pZCI6IjMifQ.10kM33I8tMFyJ2tSC3OoxrehVZJs48hMzXvowCGTna0
 
 
 

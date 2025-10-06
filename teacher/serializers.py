@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from django.db import transaction
 from account.models import User
+from student.models import Payment
 from .models import (
     Course, Section, Quiz, Question, Choice, Enrollment,
     SectionView, QuizAttempt, QuizAnswer, CourseReview
@@ -480,3 +481,4 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = ['id', 'sender_name', 'course_title', 'title', 'message', 
                  'notification_type', 'is_read', 'created_at']
+

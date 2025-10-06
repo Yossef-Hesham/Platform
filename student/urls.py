@@ -27,7 +27,6 @@ urlpatterns = [
     path('recommendations/', views.CourseRecommendationsView.as_view(), name='course_recommendations'),
     path('statistics/', views.LearningStatisticsView.as_view(), name='learning_statistics'),
     
-    
     # i should test these two paths on postman
     path('sections/<int:section_id>/download-pdf/', views.SectionPDFDownloadView.as_view(), name='download_section_pdf'),
     path('courses/<int:course_id>/pdfs/', views.CourseAllPDFsDownloadView.as_view(), name='course_pdfs_list'),
@@ -38,5 +37,6 @@ urlpatterns = [
     
     path('get/notifications/', views.StudentNotificationsView.as_view(), name='student-notifications'),
     path('notifications/<int:pk>/read/', views.MarkNotificationAsReadView.as_view(), name='mark-notification-read'),
+    
 
 ]

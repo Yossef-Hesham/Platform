@@ -1,4 +1,5 @@
 # teacher/views.py
+from asyncio.log import logger
 import traceback
 from rest_framework import status, permissions, generics
 from rest_framework.decorators import api_view, permission_classes
@@ -11,6 +12,8 @@ from django.db.models import Avg, Count, Sum, Q
 from django.utils import timezone
 from datetime import timedelta
 from account.models import User
+from student.models import Payment
+from student.serializers import PaymentSerializer
 
 from .models import (
     Course, Section, Quiz, Question, Choice, Enrollment,
@@ -957,4 +960,67 @@ class TeacherSendNotificationView(generics.CreateAPIView):
             'notification_id': notification.id
         }, status=status.HTTP_201_CREATED)
         
+
+class PaymentView(APIView):
+    
+    permission_classes = [IsTeacher]
+    
+    
+    def get(self, request):
+
+        try:
+            payments = Payment.objects.filter(course__teacher=request.user)
+        except Exception as e:
+            logger.error(f"Error fetching payments: {e}")
+            return Response(
+                {"status": "error", "message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            
+        payments_data = PaymentSerializer(payments, many=True)
+        return Response(payments_data.data)
+    
+    def post(self, request, course_id, student_id):
         
+        try:
+            # Check if enrollment exists and is inactive
+            enroll = Enrollment.objects.filter(
+                course=course_id, 
+                student=student_id, 
+                is_active=False
+            ).first()
+            
+            if not enroll:
+                # Check if already active enrollment exists
+                if Enrollment.objects.filter(
+                    course=course_id, 
+                    student=student_id, 
+                    is_active=True
+                ).exists():
+                    return Response(
+                        {"status": "error", "message": "Enrollment is already active"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                else:
+                    return Response(
+                        {"status": "error", "message": "No enrollment found to activate"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+            
+            # Activate the enrollment
+            enroll.is_active = True
+            enroll.save()
+            
+            return Response({
+                "status": "success", 
+                "message": "Enrollment activated successfully",
+                "enrollment_id": enroll.id
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Error activating enrollment: {e}")
+            return Response(
+                {"status": "error", "message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+

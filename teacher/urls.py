@@ -50,5 +50,8 @@ urlpatterns = [
     
     
      path('notifications/send/', views.TeacherSendNotificationView.as_view(), name='teacher-send-notification'),
-     
+
+
+    path('payments/<int:course_id>/<int:student_id>/', views.PaymentView.as_view(), name='payments'),
+
 ]

@@ -91,3 +91,12 @@ class BulkTemporaryEnrollmentSerializer(serializers.Serializer):
             )
         
         return valid_course_ids
+    
+    
+from .models import Payment
+
+class PaymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        fields = '__all__'

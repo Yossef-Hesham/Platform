@@ -7,6 +7,7 @@ from .models import (
 )
 
 
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = [

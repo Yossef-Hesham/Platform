@@ -61,7 +61,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     "https://edu-platform-e.web.app",
     "https://edu-platform-e.firebaseapp.com",
-    'educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app',
+    # 'educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app',
 ]
 
 CSRF_TRUSTED_ORIGINS = [

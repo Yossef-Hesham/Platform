@@ -631,7 +631,6 @@ class StudentNotesView(APIView):
         return Response({'status': 'note deleted'})
 
 
-
 class CertificateView(APIView):
     permission_classes = [IsStudent]
     
@@ -782,128 +781,89 @@ class CertificateView(APIView):
             return None
     
     def get_display_text(self, certificate):
-        """Get display text for certificate - uses title_en if available"""
+        """Get display text for certificate - returns original text without transliteration"""
         course = certificate.course
         student = certificate.student
         
-        # Try to get English title from course
-        if hasattr(course, 'title_en') and course.title_en:
-            course_title = course.title_en
-            logger.info(f"Using title_en: {course_title}")
-        else:
-            # Use original title - will transliterate if needed
-            course_title = course.title
-            logger.info(f"Using original title: {course_title}")
+        # Use course title as is (Arabic or English)
+        course_title = course.title
+        logger.info(f"Using course title as is: {course_title}")
         
-        # Try to get English name from student
-        if hasattr(student, 'full_name_en') and student.full_name_en:
-            student_name = student.full_name_en
+        # Use student name as is (Arabic or English)
+        if hasattr(student, 'full_name') and student.full_name:
+            student_name = student.full_name
         elif hasattr(student, 'first_name') and hasattr(student, 'last_name'):
             student_name = f"{student.first_name} {student.last_name}".strip()
         else:
-            student_name = str(student.full_name)
+            student_name = str(student)
         
-        # Basic transliteration for any remaining non-ASCII
-        course_title = self.transliterate_if_needed(course_title)
-        student_name = self.transliterate_if_needed(student_name)
-        
+        logger.info(f"Student name: {student_name}, Course title: {course_title}")
         return student_name, course_title
     
-    def transliterate_if_needed(self, text):
-        """Simple transliteration for non-ASCII text"""
-        if not text:
-            return "N/A"
-        
-        # Check if text is mostly ASCII
-        ascii_chars = sum(1 for c in text if ord(c) < 128)
-        if ascii_chars / len(text) > 0.5:  # If more than 50% is ASCII, keep it
-            # Just remove problematic characters
-            result = ''.join(c if ord(c) < 128 else ' ' for c in text)
-            return ' '.join(result.split())
-        
-        # If mostly non-ASCII (Arabic), transliterate
-        logger.warning(f"Text '{text}' contains non-ASCII characters - transliterating")
-        
-        # Simple transliteration mapping (expand as needed)
-        arabic_to_latin = {
-            'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'aa',
-            'ب': 'b', 'ت': 't', 'ث': 'th',
-            'ج': 'j', 'ح': 'h', 'خ': 'kh',
-            'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z',
-            'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd',
-            'ط': 't', 'ظ': 'dh', 'ع': 'a', 'غ': 'gh',
-            'ف': 'f', 'ق': 'q', 'ك': 'k', 'ل': 'l',
-            'م': 'm', 'ن': 'n', 'ه': 'h', 'و': 'w',
-            'ي': 'y', 'ى': 'a', 'ة': 'h', 'ء': 'a',
-            ' ': ' ', 'في': 'in', 'من': 'from', 'إلى': 'to',
-            'مقدمة': 'Introduction', 'تطوير': 'Development',
-            'برمجة': 'Programming', 'قواعد': 'Database',
-            'البيانات': 'Data', 'الويب': 'Web',
-            'التطبيقات': 'Applications', 'تصميم': 'Design',
-        }
-        
-        # Try word-by-word translation first
-        words = text.split()
-        translated_words = []
-        
-        for word in words:
-            if word in arabic_to_latin:
-                translated_words.append(arabic_to_latin[word])
-            else:
-                # Transliterate character by character
-                translated = ''.join(arabic_to_latin.get(c, '') for c in word)
-                if translated.strip():
-                    translated_words.append(translated)
-        
-        result = ' '.join(translated_words)
-        
-        # If transliteration resulted in empty or very short string
-        if not result or len(result) < 3:
-            result = "Course Certificate"
-        
-        return ' '.join(result.split())
+   
     
     def generate_certificate_pdf(self, certificate):
-        """Generate PDF certificate"""
+        """Generate PDF certificate with proper Arabic font support"""
         try:
-            # Get display text (will use title_en if available, or transliterate)
+            # Get display text as is
             student_name, course_title = self.get_display_text(certificate)
             
             logger.info(f"Certificate text - Student: '{student_name}', Course: '{course_title}'")
             
+            # Import required libraries
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+            from reportlab.lib.pagesizes import letter, A4
+            from reportlab.pdfgen import canvas
+            from io import BytesIO
+            import arabic_reshaper
+            from bidi.algorithm import get_display
+            import os
+            
             # Create PDF buffer
             buffer = BytesIO()
-            c = canvas.Canvas(buffer, pagesize=letter)
-            width, height = letter
             
-            # Decorative border
-            c.setStrokeColor(HexColor('#3498DB'))
-            c.setLineWidth(3)
-            c.rect(0.5*inch, 0.5*inch, width - 1*inch, height - 1*inch)
+            # Use A4 for better international compatibility
+            c = canvas.Canvas(buffer, pagesize=A4)
+            width, height = A4
             
-            # Decorative corners
-            corner_size = 0.3*inch
-            corners = [
-                (0.5*inch, 0.5*inch),
-                (0.5*inch, height - 0.5*inch),
-                (width - 0.5*inch, 0.5*inch),
-                (width - 0.5*inch, height - 0.5*inch)
-            ]
+            # Register fonts that support Arabic
+            self.register_arabic_fonts(c)
             
-            for x, y in corners:
-                c.setLineWidth(2)
-                c.line(x, y, x + corner_size, y)
-                c.line(x, y, x, y + corner_size)
+            # Process Arabic text
+            def prepare_arabic_text(text):
+                """Process Arabic text for proper display"""
+                if self.contains_arabic(text):
+                    try:
+                        # Configure reshaper for better Arabic rendering
+                        reshaper_config = arabic_reshaper.config_for_true_type_font(
+                            'fonts/DejaVuSans.ttf',  # or your font path
+                            arabic_reshaper.ENABLE_ALL_FEATURES
+                        )
+                        arabic_reshaper.config = reshaper_config
+                        
+                        reshaped_text = arabic_reshaper.reshape(text)
+                        return get_display(reshaped_text)
+                    except Exception as e:
+                        logger.warning(f"Arabic processing failed: {e}, using original text")
+                        return text
+                return text
             
-            # Certificate title
+            # Prepare texts
+            display_student_name = prepare_arabic_text(student_name)
+            display_course_title = prepare_arabic_text(course_title)
+            
+            # Set the font based on text content
+            student_font = "ArabicFont" if self.contains_arabic(student_name) else "Helvetica-Bold"
+            course_font = "ArabicFont" if self.contains_arabic(course_title) else "Helvetica-Bold"
+            
+            # Certificate design
+            self.draw_certificate_design(c, width, height)
+            
+            # Certificate title (English)
             c.setFillColor(HexColor('#2C3E50'))
-            c.setFont('Helvetica-Bold', 36)
+            c.setFont('Helvetica-Bold', 30)
             c.drawCentredString(width/2, height - 2*inch, "CERTIFICATE OF COMPLETION")
-            
-            # Decorative line
-            c.setStrokeColor(HexColor('#3498DB'))
-            c.setLineWidth(2)
-            c.line(width/2 - 2*inch, height - 2.3*inch, width/2 + 2*inch, height - 2.3*inch)
             
             # "This is to certify that"
             c.setFillColor(HexColor('#7F8C8D'))
@@ -912,8 +872,14 @@ class CertificateView(APIView):
             
             # Student name
             c.setFillColor(HexColor('#2C3E50'))
-            c.setFont('Helvetica-Bold', 28)
-            c.drawCentredString(width/2, height - 3.8*inch, student_name.upper())
+            c.setFont(student_font, 28 if student_font == "Helvetica-Bold" else 24)
+            
+            if self.contains_arabic(student_name):
+                # For Arabic text, use custom positioning
+                text_width = c.stringWidth(display_student_name, "ArabicFont", 24)
+                c.drawString((width - text_width) / 2, height - 3.8*inch, display_student_name)
+            else:
+                c.drawCentredString(width/2, height - 3.8*inch, display_student_name.upper())
             
             # "has successfully completed the course"
             c.setFillColor(HexColor('#7F8C8D'))
@@ -922,17 +888,31 @@ class CertificateView(APIView):
             
             # Course title
             c.setFillColor(HexColor('#E74C3C'))
-            c.setFont('Helvetica-Bold', 22)
+            c.setFont(course_font, 22 if course_font == "Helvetica-Bold" else 18)
             
-            # Handle long titles
-            if len(course_title) > 50:
-                lines = self.wrap_text(course_title, 50)
-                y_position = height - 5.2*inch
-                for line in lines[:3]:
-                    c.drawCentredString(width/2, y_position, line)
-                    y_position -= 0.4*inch
+            if self.contains_arabic(course_title):
+                # Handle Arabic course title
+                if len(course_title) > 25:
+                    lines = self.wrap_arabic_text(course_title, 25)
+                    y_position = height - 5.2*inch
+                    for line in lines[:3]:
+                        display_line = prepare_arabic_text(line)
+                        text_width = c.stringWidth(display_line, "ArabicFont", 18)
+                        c.drawString((width - text_width) / 2, y_position, display_line)
+                        y_position -= 0.4*inch
+                else:
+                    text_width = c.stringWidth(display_course_title, "ArabicFont", 18)
+                    c.drawString((width - text_width) / 2, height - 5.2*inch, display_course_title)
             else:
-                c.drawCentredString(width/2, height - 5.2*inch, course_title)
+                # Handle English course title
+                if len(course_title) > 50:
+                    lines = self.wrap_text(course_title, 50)
+                    y_position = height - 5.2*inch
+                    for line in lines[:3]:
+                        c.drawCentredString(width/2, y_position, line)
+                        y_position -= 0.4*inch
+                else:
+                    c.drawCentredString(width/2, height - 5.2*inch, course_title)
             
             # Completion date
             c.setFillColor(HexColor('#7F8C8D'))
@@ -946,15 +926,7 @@ class CertificateView(APIView):
             c.drawCentredString(width/2, height - 7*inch, f"Verification Code: {certificate.verification_code}")
             
             # Signature lines
-            c.setStrokeColor(HexColor('#7F8C8D'))
-            c.setLineWidth(1)
-            c.line(width/4 - 1.5*inch, 1.5*inch, width/4 + 1.5*inch, 1.5*inch)
-            c.setFillColor(HexColor('#7F8C8D'))
-            c.setFont('Helvetica', 12)
-            c.drawCentredString(width/4, 1.2*inch, "Instructor Signature")
-            
-            c.line(3*width/4 - 1.5*inch, 1.5*inch, 3*width/4 + 1.5*inch, 1.5*inch)
-            c.drawCentredString(3*width/4, 1.2*inch, "Platform Seal")
+            self.draw_signature_lines(c, width, height)
             
             # Save PDF
             c.showPage()
@@ -963,12 +935,145 @@ class CertificateView(APIView):
             pdf_content = buffer.getvalue()
             buffer.close()
             
-            logger.info(f"✅ PDF generated successfully")
+            logger.info("✅ PDF generated successfully with Arabic support")
             return pdf_content
             
         except Exception as e:
             logger.error(f"Error generating certificate PDF: {e}", exc_info=True)
+            import traceback
+            logger.error(traceback.format_exc())
             return None
+    
+    def register_arabic_fonts(self, canvas):
+        """Register fonts that support Arabic characters"""
+        try:
+            # Try different font paths - DejaVu fonts are good for Arabic
+            font_paths = [
+                # Common system paths for DejaVu fonts
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+                '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+                '/System/Library/Fonts/Arial.ttf',
+                'C:/Windows/Fonts/arial.ttf',
+                'C:/Windows/Fonts/tahoma.ttf',
+                # You can also download and include fonts in your project
+                'static/fonts/DejaVuSans.ttf',
+                'media/fonts/DejaVuSans.ttf',
+            ]
+            
+            # Also try to use reportlab's built-in font search
+            from reportlab.lib.fonts import addMapping
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+            
+            arabic_font_registered = False
+            
+            for font_path in font_paths:
+                try:
+                    if os.path.exists(font_path):
+                        pdfmetrics.registerFont(TTFont('ArabicFont', font_path))
+                        # Also register bold variant if available
+                        bold_path = font_path.replace('.ttf', '-Bold.ttf')
+                        if os.path.exists(bold_path):
+                            pdfmetrics.registerFont(TTFont('ArabicFont-Bold', bold_path))
+                        logger.info(f"✅ Successfully registered Arabic font: {font_path}")
+                        arabic_font_registered = True
+                        break
+                except Exception as e:
+                    logger.warning(f"Could not register font {font_path}: {e}")
+                    continue
+            
+            if not arabic_font_registered:
+                logger.warning("❌ No Arabic font found, Arabic text may not display correctly")
+                # Fallback: use Helvetica (will show boxes for Arabic)
+                pdfmetrics.registerFont(TTFont('ArabicFont', 'Helvetica'))
+                
+        except Exception as e:
+            logger.error(f"Font registration error: {e}")
+    
+    def draw_certificate_design(self, canvas, width, height):
+        """Draw certificate decorative elements"""
+        # Decorative border
+        canvas.setStrokeColor(HexColor('#3498DB'))
+        canvas.setLineWidth(3)
+        canvas.rect(0.5*inch, 0.5*inch, width - 1*inch, height - 1*inch)
+        
+        # Decorative corners
+        corner_size = 0.3*inch
+        corners = [
+            (0.5*inch, 0.5*inch),
+            (0.5*inch, height - 0.5*inch),
+            (width - 0.5*inch, 0.5*inch),
+            (width - 0.5*inch, height - 0.5*inch)
+        ]
+        
+        for x, y in corners:
+            canvas.setLineWidth(2)
+            canvas.line(x, y, x + corner_size, y)
+            canvas.line(x, y, x, y + corner_size)
+        
+        # Decorative line under title
+        canvas.setStrokeColor(HexColor('#3498DB'))
+        canvas.setLineWidth(2)
+        canvas.line(width/2 - 2*inch, height - 2.3*inch, width/2 + 2*inch, height - 2.3*inch)
+    
+    def draw_signature_lines(self, canvas, width, height):
+        """Draw signature lines"""
+        canvas.setStrokeColor(HexColor('#7F8C8D'))
+        canvas.setLineWidth(1)
+        canvas.line(width/4 - 1.5*inch, 1.5*inch, width/4 + 1.5*inch, 1.5*inch)
+        canvas.setFillColor(HexColor('#7F8C8D'))
+        canvas.setFont('Helvetica', 12)
+        canvas.drawCentredString(width/4, 1.2*inch, "Instructor Signature")
+        
+        canvas.line(3*width/4 - 1.5*inch, 1.5*inch, 3*width/4 + 1.5*inch, 1.5*inch)
+        canvas.drawCentredString(3*width/4, 1.2*inch, "Platform Seal")
+    
+    def contains_arabic(self, text):
+        """Check if text contains Arabic characters"""
+        if not text:
+            return False
+        
+        # Arabic Unicode ranges
+        arabic_ranges = [
+            (0x0600, 0x06FF),  # Arabic
+            (0x0750, 0x077F),  # Arabic Supplement
+            (0x08A0, 0x08FF),  # Arabic Extended-A
+            (0xFB50, 0xFDFF),  # Arabic Presentation Forms-A
+            (0xFE70, 0xFEFF),  # Arabic Presentation Forms-B
+        ]
+        
+        for char in str(text):
+            char_code = ord(char)
+            for start, end in arabic_ranges:
+                if start <= char_code <= end:
+                    return True
+        return False
+    
+    def wrap_arabic_text(self, text, max_chars):
+        """Wrap Arabic text into multiple lines"""
+        if not text:
+            return []
+        
+        words = text.split()
+        lines = []
+        current_line = []
+        current_length = 0
+        
+        for word in words:
+            word_length = len(word)
+            if current_length + word_length <= max_chars:
+                current_line.append(word)
+                current_length += word_length + 1  # +1 for space
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+                current_length = word_length
+        
+        if current_line:
+            lines.append(' '.join(current_line))
+        
+        return lines
     
     def wrap_text(self, text, max_length):
         """Wrap text into multiple lines"""
@@ -988,8 +1093,65 @@ class CertificateView(APIView):
             lines.append(' '.join(current_line))
         
         return lines
-
-
+   
+    
+   
+    def contains_arabic(self, text):
+        """Check if text contains Arabic characters"""
+        if not text:
+            return False
+        
+        # Arabic Unicode range
+        arabic_range = range(0x0600, 0x06FF)
+        
+        for char in str(text):
+            if ord(char) in arabic_range:
+                return True
+        return False
+    
+    def wrap_arabic_text(self, text, max_chars):
+        """Wrap Arabic text into multiple lines"""
+        if not text:
+            return []
+        
+        words = text.split()
+        lines = []
+        current_line = []
+        current_length = 0
+        
+        for word in words:
+            if current_length + len(word) <= max_chars:
+                current_line.append(word)
+                current_length += len(word) + 1  # +1 for space
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+                current_length = len(word)
+        
+        if current_line:
+            lines.append(' '.join(current_line))
+        
+        return lines
+    
+    def wrap_text(self, text, max_length):
+        """Wrap text into multiple lines"""
+        words = text.split()
+        lines = []
+        current_line = []
+        
+        for word in words:
+            if len(' '.join(current_line + [word])) <= max_length:
+                current_line.append(word)
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+        
+        if current_line:
+            lines.append(' '.join(current_line))
+        
+        return lines
 
 class CertificateDownloadView(APIView):
     """Download certificate PDF file with force download option"""

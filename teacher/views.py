@@ -1023,4 +1023,3 @@ class PaymentView(APIView):
                 {"status": "error", "message": "Internal server error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-

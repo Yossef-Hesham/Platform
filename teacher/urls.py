@@ -54,6 +54,4 @@ urlpatterns = [
 
     path('payments/<int:course_id>/<int:student_id>/', views.PaymentView.as_view(), name='payments'),
     path('payments/', views.PaymentView.as_view(), name='payments'),
-    
-
 ]

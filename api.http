@@ -111,8 +111,8 @@ POST  educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/user/l
 Content-Type: application/json
 
 {
-    "username_or_email": "youssifh1",
-    "password": "22122002H"
+    "username_or_email": "youssifh2",
+    "password": "22122002HH"
 }
 
 ###
@@ -224,31 +224,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 # Enrollment.objects.filter(id=3,course__id=2).update(progress_percentage=100)
 ###
 
-POST http://127.0.0.1:8000/teacher/payments/2/2/
+GET http://educational-platform-git-main-youssefs-projects-e2c35ebf.vercel.app/teacher/payments/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NzgwNTcwLCJpYXQiOjE3NTk3NzY5NzAsImp0aSI6ImYzMjJjZTUxYWIxOTQwMTQ5YjgyZWY5MzVhNzNiNjM4IiwidXNlcl9pZCI6IjMifQ.UCHSMZKzgVGsrMwQAjsAd0ku83twIpMRXQsd_IoM-KE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5ODUzMDMzLCJpYXQiOjE3NTk4NDk0MzMsImp0aSI6ImQ3MDY2MGYzZTZmZjQzZDlhMDgwMDVmMDkwNGQ4YzQ4IiwidXNlcl9pZCI6IjMifQ.WMUeLyPSYxRyFzsqLC3FQ0ABsCclE5tsNSE-9Xr3lfU
 
+###
 
+GET http://127.0.0.1:8000/teacher/payments/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5ODUzMDMzLCJpYXQiOjE3NTk4NDk0MzMsImp0aSI6ImQ3MDY2MGYzZTZmZjQzZDlhMDgwMDVmMDkwNGQ4YzQ4IiwidXNlcl9pZCI6IjMifQ.WMUeLyPSYxRyFzsqLC3FQ0ABsCclE5tsNSE-9Xr3lfU
 
-
-# from rest_framework.validators import ValidationError
-# from django.contrib.auth.password_validation import validate_password
-# from rest_framework import serializers
-# class change_password(serializers.Serializer):
-#     """
-#     Serializer for password change
-#     """
-#     old_password = serializers.CharField(write_only=True)
-#     new_password = serializers.CharField(write_only=True, validators=[validate_password])
-#     new_password_confirm = serializers.CharField(write_only=True)
-
-#     def validate(self, attrs):
-#         if attrs['new_password'] != attrs['new_password_confirm']:
-#             raise serializers.ValidationError("New passwords don't match")
-#         return attrs
-
-#     def validate_old_password(self, value):
-#         user = self.context['request'].user
-#         if not user.check_password(value):
-#             raise serializers.ValidationError("Old password is incorrect")
-#         return value

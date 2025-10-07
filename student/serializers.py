@@ -97,6 +97,9 @@ from .models import Payment
 
 class PaymentSerializer(serializers.ModelSerializer):
 
+    course_name = serializers.CharField(source='course.title', read_only=True)
+    student_name = serializers.CharField(source='student.username', read_only=True)
+    
     class Meta:
         model = Payment
-        fields = '__all__'
+        fields = ['id', 'student', 'student_name' ,'course','course_name', 'payment_method', 'payment_date']
